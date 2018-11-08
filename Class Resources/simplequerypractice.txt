@@ -1,6 +1,0 @@
-1. Select drinker from Likes where beer = 'blue moon';
-2. Select bar from Sells where beer = 'budweiser'; 
-3. Select drinker from Frequents where bar = 'blue angel';
-4. Select drinker from Frequents where bar = Sells.bar AND Sells.beer = 'budweiser';
-5. Select drinker from Frequents where bar = Sells.bar AND Sells.beer = 'budweiser' AND Sells.price < 5;
-6. 
