@@ -8,5 +8,5 @@ engine = create_engine(config.database_uri)
 
 def get_bars():
     with engine.connect() as con:
-        rs = con.execute("SELECT BarName FROM Bars;")
+        rs = con.execute("SELECT * FROM Bars;")
         return [dict(row) for row in rs]

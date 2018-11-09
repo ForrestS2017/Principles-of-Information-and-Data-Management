@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    return 'Welcome to BarBeerDrinker, use the address bar to navigate ^.'
 
 
 @app.route('/api/bar', methods=["GET"])
