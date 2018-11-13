@@ -1,0 +1,35 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">{{ beerName }}</h1>
+    <p class="beer-details" *ngIf="manufacturer">
+      Made by <i>{{ manufacturer }}</i>
+    </p>
+  </div>
+</div>
+
+<div class="container">
+  <br>
+  <div>
+    <span class="font-weight-light result-count">Sold at {{ beerLocations?.length }} Bars</span>
+    <p-dropdown class="float-right text-left" *ngIf="filterOptions" [options]="filterOptions" (onChange)="sortBy($event.value)"></p-dropdown>
+  </div>
+  <br>
+  <p-table [value]="beerLocations" sortMode="multiple" sortField="price">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Bar</th>
+        <th>
+          Price
+        </th>
+        <th>Customers</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-bar>
+      <tr>
+        <td><a routerLink="/bars/{{ bar.BarName }}">{{ bar.BarName }}</a></td>
+        <td>{{ bar.Price | currency }}</td>
+        <td>{{ bar.customers }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
