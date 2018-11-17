@@ -6,7 +6,7 @@ import json
 
 from BarBeerDrinker import database
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 @app.route('/api/bar', methods=["GET"])
 def get_bars():
