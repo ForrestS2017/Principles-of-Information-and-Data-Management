@@ -2,11 +2,12 @@ from flask import Flask
 from flask import jsonify
 from flask import make_response
 from flask import request
+from flask import redirect
 import json
 
 from BarBeerDrinker import database
 
-app = Flask(__name__, static_url_path='')
+app = Flask(__name__)
 
 @app.route('/api/bar', methods=["GET"])
 def get_bars():
@@ -131,3 +132,8 @@ def get_bar_frequent_counts():
         return jsonify(database.get_bar_frequent_counts())
     except Exception as e:
         return make_response(str(e), 500)
+
+
+@app.route('/', methods=["GET"])
+def redirect():
+    return redirect("/static/index.html")
