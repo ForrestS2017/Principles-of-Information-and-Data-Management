@@ -137,5 +137,5 @@ def get_bar_frequent_counts():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path>', methods=["GET"])
 def home(path):
-    print path
+    print(str(path))
     return redirect("/static/index.html")
