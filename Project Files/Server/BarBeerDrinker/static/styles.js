@@ -212,7 +212,7 @@ module.exports = "@charset \"UTF-8\";\n/* open-sans-300 - latin */\n@font-face {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/* You can add global styles to this file, and also import other style files */\n"
+module.exports = "/* You can add global styles to this file, and also import other style files */"
 
 /***/ }),
 
@@ -744,12 +744,12 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/forrest/Documents/School/03-01/Prin Info/Principles-of-Information-and-Data-Management/Project Files/bar-beer-drinker-ui/node_modules/bootstrap/dist/css/bootstrap.min.css */"./node_modules/bootstrap/dist/css/bootstrap.min.css");
-__webpack_require__(/*! /Users/forrest/Documents/School/03-01/Prin Info/Principles-of-Information-and-Data-Management/Project Files/bar-beer-drinker-ui/node_modules/primeicons/primeicons.css */"./node_modules/primeicons/primeicons.css");
-__webpack_require__(/*! /Users/forrest/Documents/School/03-01/Prin Info/Principles-of-Information-and-Data-Management/Project Files/bar-beer-drinker-ui/node_modules/primeng/resources/primeng.css */"./node_modules/primeng/resources/primeng.css");
-__webpack_require__(/*! /Users/forrest/Documents/School/03-01/Prin Info/Principles-of-Information-and-Data-Management/Project Files/bar-beer-drinker-ui/node_modules/primeng/resources/themes/nova-light/theme.css */"./node_modules/primeng/resources/themes/nova-light/theme.css");
-__webpack_require__(/*! /Users/forrest/Documents/School/03-01/Prin Info/Principles-of-Information-and-Data-Management/Project Files/bar-beer-drinker-ui/node_modules/highcharts/css/highcharts.css */"./node_modules/highcharts/css/highcharts.css");
-module.exports = __webpack_require__(/*! /Users/forrest/Documents/School/03-01/Prin Info/Principles-of-Information-and-Data-Management/Project Files/bar-beer-drinker-ui/src/styles.css */"./src/styles.css");
+__webpack_require__(/*! C:\Users\justc\git\Principles-of-Information-and-Data-Management\Project Files\bar-beer-drinker-ui\node_modules\bootstrap\dist\css\bootstrap.min.css */"./node_modules/bootstrap/dist/css/bootstrap.min.css");
+__webpack_require__(/*! C:\Users\justc\git\Principles-of-Information-and-Data-Management\Project Files\bar-beer-drinker-ui\node_modules\primeicons\primeicons.css */"./node_modules/primeicons/primeicons.css");
+__webpack_require__(/*! C:\Users\justc\git\Principles-of-Information-and-Data-Management\Project Files\bar-beer-drinker-ui\node_modules\primeng\resources\primeng.css */"./node_modules/primeng/resources/primeng.css");
+__webpack_require__(/*! C:\Users\justc\git\Principles-of-Information-and-Data-Management\Project Files\bar-beer-drinker-ui\node_modules\primeng\resources\themes\nova-light\theme.css */"./node_modules/primeng/resources/themes/nova-light/theme.css");
+__webpack_require__(/*! C:\Users\justc\git\Principles-of-Information-and-Data-Management\Project Files\bar-beer-drinker-ui\node_modules\highcharts\css\highcharts.css */"./node_modules/highcharts/css/highcharts.css");
+module.exports = __webpack_require__(/*! C:\Users\justc\git\Principles-of-Information-and-Data-Management\Project Files\bar-beer-drinker-ui\src\styles.css */"./src/styles.css");
 
 
 /***/ })

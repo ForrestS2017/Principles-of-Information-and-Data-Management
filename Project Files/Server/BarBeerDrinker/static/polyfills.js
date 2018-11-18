@@ -5473,7 +5473,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/forrest/Documents/School/03-01/Prin Info/Principles-of-Information-and-Data-Management/Project Files/bar-beer-drinker-ui/src/polyfills.ts */"./src/polyfills.ts");
+module.exports = __webpack_require__(/*! C:\Users\justc\git\Principles-of-Information-and-Data-Management\Project Files\bar-beer-drinker-ui\src\polyfills.ts */"./src/polyfills.ts");
 
 
 /***/ })

@@ -29,5 +29,20 @@ BEGIN
 		SET MESSAGE_TEXT = 'Pattern 2 (Drinkers cannot frequent bars in different states) is violated by this tuple';
 	END IF;
 END;
+//
+delimiter ;
 
 INSERT INTO Frequents(FirstName, LastName, BarName) VALUES ('Forrest', 'Smith', '33 Taps')
+
+SELECT *
+FROM information_schema.table_constraints
+WHERE CONSTRAINT_SCHEMA = 'BarBeerDrinkerPro';
+
+ALTER TABLE Sells
+DROP FOREIGN KEY Sells_ibfk_1
+
+ALTER TABLE Sells
+DROP INDEX KeyConstraint
+
+ALTER TABLE Beers
+DROP PRIMARY KEY
