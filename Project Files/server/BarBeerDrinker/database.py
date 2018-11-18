@@ -144,10 +144,10 @@ DRINKER PAGE
 
 def get_drinker_transactions(first_name, last_name):
     with engine.connect() as con:
-        query = sql.text("SELECT b.BillID, b.Date, b.Time, b.BarName, b.ItemName, b.Quantity, b.Price, b.TipTotal \
+        query = sql.text("SELECT b.BillID, b.`Date`, b.Time, b.BarName, b.ItemName, b.Quantity, b.Price, b.TipTotal \
             FROM Pays p, Bills b \
             WHERE p.FirstName = :first_name AND p.LastName = :last_name AND p.BillID = b.BillID \
-            ORDER BY b.Date ASC, b.Time ASC, b.BillId, b.BarName;")
+            ORDER BY b.`Date` ASC, b.Time ASC, b.BillId, b.BarName;")
         rs = con.execute(query, first_name=first_name, last_name=last_name)
         return [dict(row) for row in rs]
 
