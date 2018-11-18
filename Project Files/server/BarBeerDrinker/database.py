@@ -184,10 +184,10 @@ def get_beers_ordered(first_name,last_name):
         return [dict(row) for row in rs]
 
 
-def get_spending_habit(first_name,last_name,bar_name):
+def get_spending_habit(first_name,last_name):
     with engine.connect() as con:
-        query = sql.text()
-    rs = con.execute(query, first_name=first_name,last_name=last_name,bar_name=bar_name)
+        query = sql.text("select bi.BarName, p.total from Bills bi, Pays p where bi.BillID = p.BillID and p.FirstName = :first_name and p.LastName = :last_name group by(bi.BarName)")
+    rs = con.execute(query, first_name=first_name,last_name=last_name)
     if rs.first() is None:
         return None
     return dict(rs)
