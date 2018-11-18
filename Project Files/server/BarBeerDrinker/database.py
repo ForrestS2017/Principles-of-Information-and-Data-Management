@@ -5,6 +5,11 @@ from BarBeerDrinker import config
 
 engine = create_engine(config.database_uri)
 
+"""
+BAR PAGE
+"""
+
+
 def get_bars():
     with engine.connect() as con:
         rs = con.execute("SELECT BarName, License, City, Phone, Address FROM Bars;")
@@ -21,6 +26,7 @@ def find_bar(name):
         if result is None:
             return None
         return dict(result)
+
 
 def filter_beers(max_price):
     with engine.connect() as con:
@@ -85,6 +91,9 @@ def get_bar_cities():
         rs = con.execute('SELECT DISTINCT City FROM Bars;')
         return [row['City'] for row in rs]
 
+"""
+BEER PAGE
+"""
 
 def get_beers():
     """Gets a list of beer names from the beers table."""
@@ -131,3 +140,86 @@ def get_drinker_info(drinker_name):
         if result is None:
             return None
         return dict(result)
+
+"""
+DRINKER PAGE
+"""
+
+def get_drinker_transactions(first_name,last_name):
+    with engine.connect() as con:
+        query = sql.text("SELECT * \
+                    FROM Bills b \
+                    WHERE b.BillID IN (SELECT p.BillID FROM Pays p WHERE p.FirstName = :first_name AND p.LastName = :last_name);")
+        rs = con.execute(query, first_name=first_name, last_name=last_name)
+        if rs.first() is None:
+            return None
+        return dict(result)
+
+def get_beers_ordered(first_name,last_name):
+    with engine.connect() as con:
+        query = sql.text("SELECT * \
+                    FROM Bills b \
+                    WHERE b.BillID IN (SELECT p.BillID FROM Pays p WHERE p.FirstName = :first_name AND p.LastName = :last_name); AND b.ItemName IN (SELECT br.BeerName FROM Beers br);")
+        rs = con.execute(query, first_name=first_name)
+        result = rs.first()
+        if result is None:
+            return None
+        return dict(result)
+
+def get_spending_habit(first_name,last_name,bar_name):
+    with engine.connect() as con:
+        query = con.text()
+    rs = con.execute(query, first_name=first_name,last_name=last_name,bar_name=bar_name)
+    if rs.first() is None:
+        return None
+    return dict(result)
+
+"""
+BARTENDER PAGE
+"""
+
+def get_bartender_shfits(bartender_id):
+    with engine.connect as con:
+        query = con.text()
+    rs = con.execute(query, bartender_id=bartender_id)
+    if rs.first() is None:
+        return None
+    return dict(result)
+
+def get_bartender_sales(bartender_id):
+    with engine.connect as con:
+        query = con.text()
+    rs = con.execut(query, bartender_id=bartender_id)
+    if rs.first() is None:
+        return None
+    return dict(result)
+
+## TODO: BARTENDER ANALYTICS ##
+
+"""
+MANF PAGE
+"""
+
+def get_highest_sales(manf_name,city_name):
+    with engine.connect as con:
+        query = con.text()
+    rs = con.execut(query, manf_name=manf, city_name=city)
+    if rs.first() is None:
+        return None
+    return dict(result)
+
+def get_liked_manfs(manf_name,city_name):
+    with engine.connect as con:
+        query = con.text()
+    rs = con.execut(query, manf_name=manf, city_name=city)
+    if rs.first() is None:
+        return None
+    return dict(result)
+
+def get_total_sales(manf_name):
+    with engine.connect as con:
+        query = con.text()
+    rs = con.execut(query, manf_name=manf)
+    if rs.first() is None:
+        return None
+    return dict(result)
