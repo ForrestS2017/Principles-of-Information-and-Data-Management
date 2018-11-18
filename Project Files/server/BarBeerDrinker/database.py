@@ -15,12 +15,12 @@ def get_bars():
         rs = con.execute("SELECT BarName, License, City, Phone, Address FROM Bars;")
         return [dict(row) for row in rs]
 
+
 def find_bar(name):
     with engine.connect() as con:
         query = sql.text(
             "SELECT BarName, License, City, Phone, Address FROM Bars WHERE BarName = :name;"
         )
-
         rs = con.execute(query, name=name)
         result = rs.first()
         if result is None:
@@ -33,7 +33,6 @@ def filter_beers(max_price):
         query = sql.text(
             "SELECT * FROM Sells WHERE Price < :max_price;"
         )
-
         rs = con.execute(query, max_price=max_price)
         results = [dict(row) for row in rs]
         for r in results:
@@ -97,7 +96,6 @@ BEER PAGE
 
 def get_beers():
     """Gets a list of beer names from the beers table."""
-
     with engine.connect() as con:
         rs = con.execute('SELECT BeerName, Manf FROM Beers;')
         return [dict(row) for row in rs]
@@ -108,7 +106,6 @@ def get_beer_manufacturers(beer):
         if beer is None:
             rs = con.execute('SELECT DISTINCT Manf FROM Beers;')
             return [row['Manf'] for row in rs]
-
         query = sql.text('SELECT Manf FROM Beers WHERE BeerName = :beer;')
         rs = con.execute(query, beer=beer)
         result = rs.first()
@@ -125,7 +122,6 @@ def get_drinkers():
 
 def get_likes(drinker_name):
     """Gets a list of beers liked by the drinker provided."""
-
     with engine.connect() as con:
         query = sql.text('SELECT Beer FROM Likes WHERE FirstName = :name;')
         rs = con.execute(query, name=drinker_name)
@@ -146,7 +142,6 @@ DRINKER PAGE
 """
 
 
-def get_drinker_transactions(first_name,last_name):
 def get_drinker_transactions(first_name, last_name):
     with engine.connect() as con:
         query = sql.text("SELECT b.BillID, b.Date, b.Time, b.BarName, b.ItemName, b.Quantity, b.Price, b.TipTotal \
