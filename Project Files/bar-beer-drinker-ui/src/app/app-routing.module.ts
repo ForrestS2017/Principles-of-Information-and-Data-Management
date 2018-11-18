@@ -10,22 +10,18 @@ import { DrinkersComponent } from './drinkers/drinkers.component';
 import { ManufacturersComponent } from './manufacturers/manufacturers.component';
 import { ModificationsComponent } from './modifications/modifications.component';
 import { DrinkerDetailsComponent } from './drinker-details/drinker-details.component';
+import { BarsComponent } from './bars/bars.component';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'bars'
-  },
-  {
-    path: 'static',
-    pathMatch: 'full',
-    redirectTo: 'bars'
+    component: WelcomeComponent
   },
   {
     path: 'bars',
     pathMatch: 'full',
-    component: WelcomeComponent
+    component: BarsComponent
   },
   {
     path: 'bars/:bar',
@@ -56,11 +52,6 @@ const routes: Routes = [
     path: 'drinkers',
     pathMatch: 'full',
     component: DrinkersComponent
-  },
-  {
-    path: 'bartenders',
-    pathMatch: 'full',
-    component: BartendersComponent
   },
   {
     path: 'manufacturers',

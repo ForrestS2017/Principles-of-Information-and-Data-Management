@@ -110,7 +110,7 @@ def get_beer_manufacturers(beer):
 
 def get_drinkers():
     with engine.connect() as con:
-        rs = con.execute('SELECT FirstName, City, State, Address, Phone FROM Drinkers;')
+        rs = con.execute('SELECT * FROM Drinkers;')
         return [dict(row) for row in rs]
 
 
@@ -125,7 +125,7 @@ def get_likes(drinker_name):
 
 def get_drinker_info(drinker_name):
     with engine.connect() as con:
-        query = sql.text('SELECT * FROM drinkers WHERE FirstName = :name;')
+        query = sql.text('SELECT * FROM Drinkers WHERE FirstName = :name;')
         rs = con.execute(query, name=drinker_name)
         result = rs.first()
         if result is None:
