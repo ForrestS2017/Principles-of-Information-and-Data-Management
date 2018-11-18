@@ -5,6 +5,11 @@ import { BarDetailsComponent } from './bar-details/bar-details.component';
 import { BeerDetailsComponent } from './beer-details/beer-details.component';
 import { BeersComponent } from './beers/beers.component';
 import { InsightComponent } from './insight/insight.component';
+import { BartendersComponent } from './bartenders/bartenders.component';
+import { DrinkersComponent } from './drinkers/drinkers.component';
+import { ManufacturersComponent } from './manufacturers/manufacturers.component';
+import { ModificationsComponent } from './modifications/modifications.component';
+import { DrinkerDetailsComponent } from './drinker-details/drinker-details.component';
 
 const routes: Routes = [
   {
@@ -41,6 +46,41 @@ const routes: Routes = [
     path: 'insight',
     pathMatch: 'full',
     component: InsightComponent
+  },
+  {
+    path: 'bartenders',
+    pathMatch: 'full',
+    component: BartendersComponent
+  },
+  {
+    path: 'drinkers',
+    pathMatch: 'full',
+    component: DrinkersComponent
+  },
+  {
+    path: 'bartenders',
+    pathMatch: 'full',
+    component: BartendersComponent
+  },
+  {
+    path: 'manufacturers',
+    pathMatch: 'full',
+    component: ManufacturersComponent
+  },
+  {
+    path: 'bartenders',
+    pathMatch: 'full',
+    component: BartendersComponent
+  },
+  {
+    path: 'modifications',
+    pathMatch: 'full',
+    component: ModificationsComponent
+  },
+  {
+    path: 'drinkers/:drinker',
+    pathMatch: 'full',
+    component: DrinkerDetailsComponent
   }
 ];
 
