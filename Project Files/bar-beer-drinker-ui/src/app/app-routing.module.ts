@@ -19,6 +19,11 @@ const routes: Routes = [
     component: WelcomeComponent
   },
   {
+    path: 'static',
+    pathMatch: 'full',
+    component: WelcomeComponent
+  },
+  {
     path: 'bars',
     pathMatch: 'full',
     component: BarsComponent
