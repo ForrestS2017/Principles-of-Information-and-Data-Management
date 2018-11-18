@@ -102,12 +102,23 @@ def get_drinkers():
         return make_response(str(e), 500)
 
 
-@app.route("/api/drinker/<name>", methods=["GET"])
-def get_drinker(name):
+@app.route("/api/drinker/<FirstName>_<LastName>", methods=["GET"])
+def get_drinker(FirstName, LastName):
     try:
-        if name is None:
-            raise ValueError("Drinker is not specified.")
-        return jsonify(database.get_drinker_info(name))
+        if FirstName is None and LastName is None:
+            raise ValueError("First name and last name of drinker are not fully specified.")
+        return jsonify(database.get_drinker_info(FirstName, LastName))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route("/api/drinker/<FirstName>_<LastName>/transactions", methods=["GET"])
+def get_drinker_transactions(FirstName, LastName):
+    try:
+        if FirstName is None and LastName is None:
+            raise ValueError("First name and last name of drinker are not fully specified.")
+        return jsonify(database.get_drinker_transactions(FirstName, LastName))
     except ValueError as e:
         return make_response(str(e), 400)
     except Exception as e:

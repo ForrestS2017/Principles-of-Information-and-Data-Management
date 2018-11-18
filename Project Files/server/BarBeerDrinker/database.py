@@ -132,10 +132,10 @@ def get_likes(drinker_name):
         return [row['Beer'] for row in rs]
 
 
-def get_drinker_info(drinker_name):
+def get_drinker_info(drinker_first_name, drinker_last_name):
     with engine.connect() as con:
-        query = sql.text('SELECT * FROM Drinkers WHERE FirstName = :name;')
-        rs = con.execute(query, name=drinker_name)
+        query = sql.text('SELECT * FROM Drinkers WHERE FirstName = :FirstName AND LastName = :LastName;')
+        rs = con.execute(query, FirstName=drinker_first_name, LastName=drinker_last_name)
         result = rs.first()
         if result is None:
             return None
@@ -147,13 +147,12 @@ DRINKER PAGE
 
 def get_drinker_transactions(first_name,last_name):
     with engine.connect() as con:
-        query = sql.text("SELECT * \
-                    FROM Bills b \
-                    WHERE b.BillID IN (SELECT p.BillID FROM Pays p WHERE p.FirstName = :first_name AND p.LastName = :last_name);")
+        query = sql.text("SELECT b.BillID, b.Date, b.Time, b.BarName, b.ItemName, b.Quantity, b.Price, b.TipTotal \
+            FROM Pays p, Bills b \
+            WHERE p.FirstName = :first_name AND p.LastName = :last_name AND p.BillID = b.BillID \
+            ORDER BY b.Date ASC, b.Time ASC, b.BillId, b.BarName;")
         rs = con.execute(query, first_name=first_name, last_name=last_name)
-        if rs.first() is None:
-            return None
-        return dict(result)
+        return [dict(row) for row in rs]
 
 def get_beers_ordered(first_name,last_name):
     with engine.connect() as con:
