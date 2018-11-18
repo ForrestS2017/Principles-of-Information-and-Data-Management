@@ -208,7 +208,7 @@ def get_bartender_shifts(first_name, last_name):
 
 def get_bartender_sales(first_name, last_name):
     with engine.connect as con:
-        query = sql.text("select count(bi.ItemName), bb.Manf from Beers bb, Bartenders ba, Bills bi, Shifts s where ba.EmployeeID = s.EmployeeID and if(bi.Date = '11/1' or bi.Date = '11/7', s.WeekDay = 'Sat-Sun', s.WeekDay = 'Mon-Fri') and bi.Time > s.StartTime and bi.Time < s.EndTime and ba.FirstName = :first_name and ba.LastName = :last_name and bi.ItemName in (select b2.BeerName from Beers b2) and bb.BeerName = bi.ItemName group by bb.Manf")
+        query = sql.text("select count(bi.ItemName), bb.Manf from Beers bb, Bartenders ba, Bills bi, Shifts s where ba.EmployeeID = s.EmployeeID and bi.BarName = sc.BarName and sc.EmployeeID = s.EmployeeID and if(bi.Date = '11/1' or bi.Date = '11/7', s.WeekDay = 'Sat-Sun', s.WeekDay = 'Mon-Fri') and bi.Time > s.StartTime and bi.Time < s.EndTime and ba.FirstName = :first_name and ba.LastName = :last_name and bi.ItemName in (select b2.BeerName from Beers b2) and bb.BeerName = bi.ItemName group by bb.Manf")
     rs = con.execute(query, first_name=first_name, last_name=last_name)
     if rs.first() is None:
         return None
