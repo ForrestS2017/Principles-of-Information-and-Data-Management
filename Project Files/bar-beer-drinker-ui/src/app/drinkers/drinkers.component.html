@@ -1,40 +1,62 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h1 class="display-4">DRINKER AAAA!</h1>
-    <p class="lead">This page can be used to look up info about drinkers.</p>
+    <h1 class="display-4">Drinkers</h1>
+    <p class="lead">This page can be used to look up information about drinkers' transactions</p>
   </div>
 </div>
 
 <div class="container">
 
-  <p-table [value]="transactions">
+  Select a Drinker:&nbsp;
+  <select class='select-option' required [(ngModel)]='optionSelected' (ngModelChange)='onOptionSelected($event)'>
+    <option class='option' *ngFor='let name of names' [value]="name.value">{{name.view}}</option>
+  </select>
+
+  <br><br>
+
+  <p-table [value]="transactions" autoLayout=true>
     <ng-template pTemplate="header">
         <tr>
-          <th>ID</th>
-          <th>Name</th>
+            <th colspan=8 style="text-align:center">
+                <ng-container>
+                    <span *ngIf="selectedDrinker.length == 0"></span>
+                    <span *ngIf="selectedDrinker.length > 0"><b>{{selectedDrinker}}</b>'s Transactions</span>
+                </ng-container>
+            </th>
+        </tr>
+        <tr>
+          <th>Bill ID</th>
           <th>Date</th>
           <th>Time</th>
+          <th>Bar</th>
           <th>Items</th>
+          <th>Tax</th>
           <th>Tip</th>
           <th>Total</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-transaction>
         <tr>
-          <td>
-            <a routerLink="/drinker/Forrest_Smith">
-              {{ transaction.ID }}
-            </a>
-          </td>
-          <td>Forrest Smith</td>
+          <td>{{ transaction.ID }}</td>
           <td>{{ transaction.Date }}</td>
           <td>{{ transaction.Time }}</td>
-          <td>{{ transaction.Items }}</td>
-          <td>{{ transaction.Tip }}</td>
-          <td>{{ transaction.Total }}</td>
+          <td>{{ transaction.Bar }}</td>
+          <td style="white-space:pre-line;">{{ transaction.ItemString }}</td>
+          <td>${{ transaction.TaxString }}</td>
+          <td>${{ transaction.TipString }}</td>
+          <td>${{ transaction.TotalString }}</td>
         </tr>
     </ng-template>
   </p-table>
+  
+  <br><br>
+  
+  <div id="ordersChart" style="height: 400px; width: 100%;"></div>
+  
+  <br><br>
+  
+  <div id="spendingChart" style="height: 400px; width: 100%;"></div>
+  
 </div>
 
 <br><br>

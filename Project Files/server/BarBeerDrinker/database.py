@@ -139,7 +139,7 @@ def get_drinker_info(drinker_first_name, drinker_last_name):
         result = rs.first()
         if result is None:
             return None
-        return dict(result)
+        return dict(result)   
 
 """
 DRINKER PAGE
@@ -147,6 +147,7 @@ DRINKER PAGE
 
 
 def get_drinker_transactions(first_name,last_name):
+def get_drinker_transactions(first_name, last_name):
     with engine.connect() as con:
         query = sql.text("SELECT b.BillID, b.Date, b.Time, b.BarName, b.ItemName, b.Quantity, b.Price, b.TipTotal \
             FROM Pays p, Bills b \
@@ -155,6 +156,26 @@ def get_drinker_transactions(first_name,last_name):
         rs = con.execute(query, first_name=first_name, last_name=last_name)
         return [dict(row) for row in rs]
 
+def get_drinker_beer_purchases(first_name, last_name):
+    with engine.connect() as con:
+        query = sql.text("SELECT b.ItemName, CAST(SUM(b.Quantity) AS UNSIGNED) as Total \
+            FROM Pays p, Bills b \
+            WHERE p.FirstName = :first_name AND p.LastName = :last_name AND p.BillID = b.BillId \
+            AND b.ItemName IN (SELECT BeerName FROM Beers) \
+            GROUP BY b.ItemName \
+            ORDER BY Total DESC")
+        rs = con.execute(query, first_name=first_name, last_name=last_name)
+        return [dict(row) for row in rs]
+        
+def get_drinker_spend_per_bar_per_day(first_name, last_name):
+    with engine.connect() as con:
+        query = sql.text("SELECT b.Date, b.BarName, ROUND(SUM(b.TipTotal), 2) as Total \
+            FROM Pays p, Bills b \
+            WHERE p.FirstName = :first_name AND p.LastName = :last_name AND p.BillID = b.BillId \
+            GROUP BY b.Date, b.BarName \
+            ORDER BY b.Date")
+        rs = con.execute(query, first_name=first_name, last_name=last_name)
+        return [dict(row) for row in rs]
 
 def get_beers_ordered(first_name,last_name):
     with engine.connect() as con:

@@ -1,0 +1,33 @@
+http://infolab.stanford.edu/~ullman/fcdb/jw-notes06/constraints.html
+
+ALTER TABLE Drinkers
+MODIFY FirstName varchar(100) NOT NULL;
+
+ALTER TABLE Drinkers
+ADD PRIMARY KEY(FirstName, LastName);
+
+ALTER TABLE Sells
+ADD FOREIGN KEY (BeerName) REFERENCES Beers(BeerName);
+
+DELETE FROM Sells WHERE BarName = 'BarName'
+
+ALTER TABLE Sells
+ADD CONSTRAINT KeyConstraint UNIQUE(BarName, BeerName);
+
+delimiter //
+CREATE TRIGGER Pattern_2 
+BEFORE INSERT ON Frequents
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT * 
+        FROM Drinkers d, Bars b
+        WHERE d.FirstName = NEW.FirstName AND d.LastName = NEW.LastName
+			AND b.BarName = NEW.BarName AND d.State <> b.State
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 2 (Drinkers cannot frequent bars in different states) is violated by this tuple';
+	END IF;
+END;
+
+INSERT INTO Frequents(FirstName, LastName, BarName) VALUES ('Forrest', 'Smith', '33 Taps')

@@ -1,0 +1,43 @@
+=== PATTERN 1 ===
+Transactions/bills  cannot be issued  at times when the given bar is closed
+
+SELECT CASE WHEN
+NOT EXISTS (
+	SELECT bi.BillID, bi.Time, ba.OpenTime, ba.CloseTime
+	FROM Bills bi, Bars ba
+	WHERE bi.BarName = ba.BarName AND bi.Time < '24:00' 
+		AND (
+			(ba.OpenTime < ba.CloseTime AND (bi.Time < ba.OpenTime OR bi.Time > ba.CloseTime))
+			OR
+			(ba.OpenTime > ba.CloseTime AND (bi.Time < ba.OpenTime AND bi.Time > ba.CloseTime))
+		)
+)
+THEN 'true'
+ELSE 'false'
+END Verify;
+
+=== PATTERN 2 ===
+Drinkers cannot frequent bars in different state that they live.
+
+SELECT CASE WHEN
+NOT EXISTS (
+    SELECT d.FirstName, d.LastName, d.State, b.State
+    FROM Drinkers d, Frequents f, Bars b
+    WHERE d.FirstName = f.FirstName AND d.LastName = f.LastName AND b.BarName = f.BarName
+        AND b.State <> d.State
+)
+THEN 'true'
+ELSE 'false'
+END Verify;
+    
+=== PATTERN 3 ===
+For every two beers, b1 and b2, different bars may charge differently for b1 and b2 but b1 should either be less expensive than b2 
+in ALL bars or more expensive than b2 in ALL bars.  Cannot be the case that in one bar Corona is more expensive than Bud and in another 
+Bud is more expensive than Corona.  But Corona may be more expensive than Bud in one bar, and have the same price as Bud in another.
+
+=== PATTERN 4 ===
+Bar cannot sell more beers of specific brand, than it has in its inventory
+
+=== PATTERN 5 ===
+A bartender cannot work more  than one shift a day. 
+
