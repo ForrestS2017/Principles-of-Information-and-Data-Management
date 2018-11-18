@@ -145,6 +145,7 @@ def get_drinker_info(drinker_first_name, drinker_last_name):
 DRINKER PAGE
 """
 
+
 def get_drinker_transactions(first_name,last_name):
     with engine.connect() as con:
         query = sql.text("SELECT b.BillID, b.Date, b.Time, b.BarName, b.ItemName, b.Quantity, b.Price, b.TipTotal \
@@ -153,6 +154,7 @@ def get_drinker_transactions(first_name,last_name):
             ORDER BY b.Date ASC, b.Time ASC, b.BillId, b.BarName;")
         rs = con.execute(query, first_name=first_name, last_name=last_name)
         return [dict(row) for row in rs]
+
 
 def get_beers_ordered(first_name,last_name):
     with engine.connect() as con:
@@ -165,33 +167,36 @@ def get_beers_ordered(first_name,last_name):
             return None
         return dict(result)
 
+
 def get_spending_habit(first_name,last_name,bar_name):
     with engine.connect() as con:
-        query = con.text()
+        query = sql.text()
     rs = con.execute(query, first_name=first_name,last_name=last_name,bar_name=bar_name)
     if rs.first() is None:
         return None
-    return dict(result)
+    return dict(rs)
 
 """
 BARTENDER PAGE
 """
 
+
 def get_bartender_shfits(bartender_id):
     with engine.connect as con:
-        query = con.text()
+        query = sql.text()
     rs = con.execute(query, bartender_id=bartender_id)
     if rs.first() is None:
         return None
-    return dict(result)
+    return dict(rs)
+
 
 def get_bartender_sales(bartender_id):
     with engine.connect as con:
-        query = con.text()
-    rs = con.execut(query, bartender_id=bartender_id)
+        query = sql.text()
+    rs = con.execute(query, bartender_id=bartender_id)
     if rs.first() is None:
         return None
-    return dict(result)
+    return dict(rs)
 
 ## TODO: BARTENDER ANALYTICS ##
 
@@ -199,26 +204,29 @@ def get_bartender_sales(bartender_id):
 MANF PAGE
 """
 
+
 def get_highest_sales(manf_name,city_name):
     with engine.connect as con:
-        query = con.text()
-    rs = con.execut(query, manf_name=manf, city_name=city)
+        query = sql.text()
+    rs = con.execute(query, manf_name=manf, city_name=city)
     if rs.first() is None:
         return None
-    return dict(result)
+    return dict(rs)
+
 
 def get_liked_manfs(manf_name,city_name):
     with engine.connect as con:
-        query = con.text()
-    rs = con.execut(query, manf_name=manf, city_name=city)
+        query = sql.text()
+    rs = con.execute(query, manf_name=manf, city_name=city)
     if rs.first() is None:
         return None
-    return dict(result)
+    return dict(rs)
+
 
 def get_total_sales(manf_name):
     with engine.connect as con:
-        query = con.text()
-    rs = con.execut(query, manf_name=manf)
+        query = sql.text()
+    rs = con.execute(query, manf_name=manf)
     if rs.first() is None:
         return None
-    return dict(result)
+    return dict(rs)
