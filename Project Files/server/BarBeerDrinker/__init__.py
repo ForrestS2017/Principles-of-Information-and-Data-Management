@@ -58,6 +58,26 @@ def get_bar_cities():
     except Exception as e:
         return make_response(str(e), 500)
 
+@app.route("/api/bar-top-drinkers/<bar_name>", methods=["GET"])
+def get_bar_top_drinkers(bar_name):
+    try:
+        return jsonify(database.get_bar_top_drinkers(bar_name))
+    except Exception as e:
+        return make_response(str(e), 500)
+
+@app.route("/api/bar-top-sold-beers/<bar_name>_<day>", methods=["GET"])
+def get_bar_top_sold_beers(bar_name, day):
+    try:
+        return jsonify(database.get_bar_top_sold_beers(bar_name, day))
+    except Exception as e:
+        return make_response(str(e), 500)
+
+@app.route("/api/days", methods=["GET"])
+def get_days():
+    try:
+        return jsonify(database.get_days())
+    except Exception as e:
+        return make_response(str(e), 500)
 
 @app.route("/api/beer", methods=["GET"])
 def get_beers():
@@ -198,6 +218,15 @@ def get_bar_frequent_counts():
         return jsonify(database.get_bar_frequent_counts())
     except Exception as e:
         return make_response(str(e), 500)
+
+@app.route("/api/bartenders/<Employee_ID>", methods=["GET"])
+def get_bartender_shifts(Employee_ID):
+    try:
+        return jsonify(database.get_bartender_shifts(Employee_ID))
+    except Exception as e:
+        #raise ValueError(str(e))
+        return make_response(str(e), 500)
+
         
 @app.route('/api/patterns/1', methods=['GET'])
 def verify_pattern_1():

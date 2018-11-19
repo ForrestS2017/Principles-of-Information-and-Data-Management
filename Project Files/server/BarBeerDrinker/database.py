@@ -90,6 +90,45 @@ def get_bar_cities():
         rs = con.execute('SELECT DISTINCT City FROM Bars;')
         return [row['City'] for row in rs]
 
+def get_bar_top_drinkers(bar_name):
+    with engine.connect() as con:
+        query = sql.text('SELECT p.FirstName, p.LastName, p.Total \
+                        FROM Pays p, Bills b \
+                        WHERE p.BillID = b.BillID and b.BarName = :bar_name \
+                        Group by p.BillID \
+                        Order by p.Total desc \
+                        limit 10 \
+                        ')
+        rs = con.execute(query,bar_name=bar_name)
+        if rs.rowcount is 0:
+            return None
+        results = [dict(row) for row in rs]
+        return results
+
+def get_bar_top_sold_beers(bar_name, day):
+    with engine.connect() as con:
+        query = sql.text('SELECT b.ItemName , sum(b.Quantity) AS Quantity \
+                        FROM Bills b \
+                        WHERE b.`Date` = :day AND b.BarName = :bar_name AND b.ItemName in (SELECT bb.BeerName FROM Beers bb) \
+                        GROUP BY b.ItemName \
+                        ORDER BY Quantity DESC \
+                        ')
+        rs = con.execute(query,bar_name=bar_name, day=day)
+        if rs.rowcount is 0:
+            return None
+        results = [dict(row) for row in rs]
+        return results
+
+def get_days():
+    with engine.connect() as con:
+        query = sql.text('SELECT * FROM Dates')
+        rs = con.execute(query)
+        if rs.rowcount is 0:
+            return None
+        results = [dict(row) for row in rs]
+        return results
+
+
 """
 BEER PAGE
 """
@@ -187,15 +226,14 @@ def get_beers_ordered(first_name,last_name):
 def get_spending_habit(first_name,last_name):
     with engine.connect() as con:
         query = sql.text("select bi.BarName, p.total from Bills bi, Pays p where bi.BillID = p.BillID and p.FirstName = :first_name and p.LastName = :last_name group by(bi.BarName)")
-    rs = con.execute(query, first_name=first_name,last_name=last_name)
-    if rs.first() is None:
-        return None
-    return dict(rs)
+        rs = con.execute(query, first_name=first_name,last_name=last_name)
+        if rs.first() is None:
+            return None
+        return dict(rs)
 
 """
 BARTENDER PAGE
 """
-
 
 def get_bartender_shifts(first_name, last_name):
     with engine.connect() as con:
@@ -242,31 +280,19 @@ MANF PAGE
 def get_highest_sales(manf_name):
     with engine.connect as con:
         query = sql.text("select distinct b.manf, bi.TipTotal, ba.City from Beers b, Bills bi, Bars ba where b.manf = :manf_name and ba.BarName = bi.BarName and bi.ItemName in (select distinct b1.BeerName from Beers b1 where b1.manf = :manf_name) order by bi.TipTotal desc")
-    rs = con.execute(query, manf_name=manf_name)
-    if rs.first() is None:
-        return None
-    return [dict(row) for row in rs]
+        rs = con.execute(query, manf_name=manf_name)
+        if rs.rowcount is 0:
+            return None
+        return [dict(row) for row in rs]
 
 
 def get_liked_manfs(manf_name):
-    with engine.connect as con:
+    with engine.connect() as con:
         query = sql.text("select d.City, count(distinct d.FirstName) from Drinkers d, Likes l where d.FirstName = l.FirstName and d.LastName = l.LastName and l.beer in (select bb.BeerName from Beers bb where manf = :manf_name) group by d.City order by count(d.FirstName) desc")
     rs = con.execute(query, manf_name=manf_name)
-    if rs.first() is None:
+    if rs.rowcount is 0:
         return None
     return [dict(row) for row in rs]
-    
-def get_beer_manufacturers(beer):
-    with engine.connect() as con:
-        if beer is None:
-            rs = con.execute('SELECT DISTINCT Manf FROM Beers;')
-            return [row['Manf'] for row in rs]
-        query = sql.text('SELECT Manf FROM Beers WHERE BeerName = :beer;')
-        rs = con.execute(query, beer=beer)
-        result = rs.first()
-        if result is None:
-            return None
-        return result['Manf']
         
 def verify_pattern_1():
     with engine.connect() as con:
