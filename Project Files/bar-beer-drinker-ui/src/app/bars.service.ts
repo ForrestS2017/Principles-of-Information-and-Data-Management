@@ -41,4 +41,8 @@ export class BarsService {
   getFrequentCounts() {
     return this.http.get<any[]>('/api/frequents-data');
   }
+
+  getTopDrinkers(bar: string) {
+    return this.http.get<any[]>('/api/bar-top-drinkers/' + bar)
+  }
 }
