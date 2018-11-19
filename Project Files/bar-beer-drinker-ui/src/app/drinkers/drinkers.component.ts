@@ -31,6 +31,9 @@ export class DrinkersComponent implements OnInit {
   }
   
   onOptionSelected(event) {
+    if (event == null) {
+        return;
+    }
     var drinker:Drinker = this.drinkers[event];
     this.drinkerName = drinker.FirstName + ' ' + drinker.LastName;
     this.getTransactions(drinker.FirstName, drinker.LastName);

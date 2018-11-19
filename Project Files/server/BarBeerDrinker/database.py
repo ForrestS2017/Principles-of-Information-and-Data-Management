@@ -198,21 +198,39 @@ BARTENDER PAGE
 
 
 def get_bartender_shifts(first_name, last_name):
-    with engine.connect as con:
-        query = sql.text("select s.StartTime, s.EndTime from Shifts s, Bartenders b where s.EmployeeID = b.EmployeeID and b.FirstName = :first_name and b.LastName = :last_name")
-    rs = con.execute(query, first_name=first_name, last_name=last_name)
-    if rs.first() is None:
-        return None
-    return [dict(row) for row in rs]
-
+    with engine.connect() as con:
+        query = sql.text("select s.WeekDay, s.StartTime, s.EndTime from Shifts s, Bartenders b where s.EmployeeID = b.EmployeeID and b.FirstName = :first_name and b.LastName = :last_name")
+        rs = con.execute(query, first_name=first_name, last_name=last_name)
+        if rs.rowcount is 0:
+            return None
+        return [dict(row) for row in rs]
 
 def get_bartender_sales(first_name, last_name):
-    with engine.connect as con:
-        query = sql.text("select count(bi.ItemName), bb.Manf from Beers bb, Bartenders ba, Bills bi, Shifts s where ba.EmployeeID = s.EmployeeID and bi.BarName = sc.BarName and sc.EmployeeID = s.EmployeeID and if(bi.Date = '11/1' or bi.Date = '11/7', s.WeekDay = 'Sat-Sun', s.WeekDay = 'Mon-Fri') and bi.Time > s.StartTime and bi.Time < s.EndTime and ba.FirstName = :first_name and ba.LastName = :last_name and bi.ItemName in (select b2.BeerName from Beers b2) and bb.BeerName = bi.ItemName group by bb.Manf")
-    rs = con.execute(query, first_name=first_name, last_name=last_name)
-    if rs.first() is None:
-        return None
-    return [dict(row) for row in rs]
+    with engine.connect() as con:
+        query = sql.text('SELECT b.ItemName, CAST(SUM(b.Quantity) AS UNSIGNED) as TotalSold \
+            FROM Bartenders t, Shifts s, Schedules c, Bills b \
+            WHERE t.FirstName = :first_name AND t.LastName = :last_name \
+                AND t.EmployeeID = s.EmployeeID AND s.EmployeeID = c.EmployeeID AND c.BarName = b.BarName \
+                AND b.ItemName IN (SELECT BeerName FROM Beers) \
+                AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
+                AND ( \
+                    (s.WeekDay = \'Mon-Fri\' AND b.Date < \'11/6\') \
+                    OR \
+                    (s.WeekDay = \'Sat-Sun\' AND b.Date >= \'11/6\') \
+                ) \
+            GROUP BY b.ItemName')
+        rs = con.execute(query, first_name=first_name, last_name=last_name)
+        if rs.rowcount is 0:
+            return None
+        return [dict(row) for row in rs]
+    
+def get_bartenders_for_bar(bar_name):
+    with engine.connect() as con:
+        query = sql.text('SELECT b.EmployeeID, b.FirstName, b.LastName \
+            FROM Schedules s, Bartenders b \
+            WHERE s.BarName = :bar AND s.EmployeeID = b.EmployeeID')
+        rs = con.execute(query, bar=bar_name)
+        return [dict(row) for row in rs]
 
 ## TODO: BARTENDER ANALYTICS ##
 

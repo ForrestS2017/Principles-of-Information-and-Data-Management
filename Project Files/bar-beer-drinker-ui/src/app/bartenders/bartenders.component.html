@@ -1,3 +1,69 @@
-<p>
-  bartenders works!
-</p>
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Bartenders</h1>
+    <p class="lead">This page can be used to look up information about bartenders</p>
+    <p-dropdown *ngIf="barSelect" [ngClass]="{ 'no-option-selected': selectedBar === undefined || selectedBar === null }"
+      placeholder="Select a Bar" [options]="barSelect" [(ngModel)]="selectedBar" showClear="true"
+      (onChange)="getBartenders($event.value)"></p-dropdown>
+    <br><br>
+    <ng-container>
+      <span *ngIf="barName === undefined || barName === null || barName.length == 0"></span>
+      <span *ngIf="barName !== undefined && barName !== null && barName.length > 0">
+        <p-dropdown *ngIf="bartenderSelect" [ngClass]="{ 'no-option-selected': selectedBartender === undefined || selectedBartender === null }"
+          placeholder="Select a Bartender" [options]="bartenderSelect" [(ngModel)]="selectedBartender" showClear="true"
+          (onChange)="getBartenderInfo($event.value)"></p-dropdown>
+      </span>
+    </ng-container>
+  </div>
+</div>
+
+<div class="container">
+
+  <br><br>
+  <ng-container>
+      <span *ngIf="bartenderName === undefined || bartenderName === null || bartenderName.length == 0"></span>
+      <span *ngIf="bartenderName !== undefined && bartenderName !== null && bartenderName.length > 0">
+          <p-table [value]="shifts" autoLayout=true>
+            <ng-template pTemplate="header">
+                <tr><th colspan=3 style="text-align:center"><b>{{bartenderName}}</b>'s Shifts</th></tr>
+                <tr>
+                  <th>Days</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-shift>
+                <tr>
+                  <td>{{ shift.WeekDay }}</td>
+                  <td>{{ shift.StartTime }}</td>
+                  <td>{{ shift.EndTime }}</td>
+                </tr>
+            </ng-template>
+          </p-table>
+  
+          <br><br>
+          
+          <p-table [value]="sales" autoLayout=true>
+            <ng-template pTemplate="header">
+                <tr><th colspan=2 style="text-align:center"><b>{{bartenderName}}</b>'s Sales</th></tr>
+                <tr>
+                  <th>Beer</th>
+                  <th>Quantity Sold</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-sale>
+                <tr>
+                  <td>{{ sale.ItemName }}</td>
+                  <td>{{ sale.TotalSold }}</td>
+                </tr>
+            </ng-template>
+          </p-table>
+          
+          <br><br>
+  
+      </span>
+  </ng-container>
+  
+</div>
+
+<br><br>
