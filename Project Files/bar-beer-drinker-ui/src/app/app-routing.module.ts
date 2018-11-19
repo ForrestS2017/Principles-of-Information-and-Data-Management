@@ -60,7 +60,7 @@ const routes: Routes = [
     component: ManufacturersComponent
   },
   {
-    path: 'bartenders/:EmployeeID',
+    path: 'bartenders',
     pathMatch: 'full',
     component: BartendersComponent
   },

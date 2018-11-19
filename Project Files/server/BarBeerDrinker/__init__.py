@@ -218,15 +218,6 @@ def get_bar_frequent_counts():
         return jsonify(database.get_bar_frequent_counts())
     except Exception as e:
         return make_response(str(e), 500)
-
-@app.route("/api/bartenders/<Employee_ID>", methods=["GET"])
-def get_bartender_shifts(Employee_ID):
-    try:
-        return jsonify(database.get_bartender_shifts(Employee_ID))
-    except Exception as e:
-        #raise ValueError(str(e))
-        return make_response(str(e), 500)
-
         
 @app.route('/api/patterns/1', methods=['GET'])
 def verify_pattern_1():

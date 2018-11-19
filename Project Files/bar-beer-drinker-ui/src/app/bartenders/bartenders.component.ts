@@ -59,6 +59,8 @@ export class BartendersComponent implements OnInit {
   
   getBartenders(barValue) {
       if (barValue == null) {
+          this.barName = null;
+          this.bartenderName = null;
           return;
       }
       var bar:Bar = this.bars[barValue];
@@ -77,6 +79,7 @@ export class BartendersComponent implements OnInit {
   
   getBartenderInfo(bartenderValue) {
       if (bartenderValue == null) {
+          this.bartenderName = null;
           return;
       }
       var bartender:Bartender = this.bartenders[bartenderValue];
