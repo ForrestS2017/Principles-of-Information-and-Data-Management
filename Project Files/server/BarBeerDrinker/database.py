@@ -105,16 +105,24 @@ def get_bar_top_drinkers(bar_name):
         results = [dict(row) for row in rs]
         return results
 
-def get_bars_top_brands(bar_name):
+def get_bar_top_sold_beers(bar_name, day):
     with engine.connect() as con:
-        query = sql.text('SELECT p.FirstName, p.LastName, p.Total \
-                        FROM Pays p, Bills b \
-                        WHERE p.BillID = b.BillID and b.BarName = :bar_name \
-                        Group by p.BillID \
-                        Order by p.Total asc \
-                        limit 10 \
+        query = sql.text('SELECT b.ItemName , sum(b.Quantity) AS Quantity \
+                        FROM Bills b \
+                        WHERE b.`Date` = :day AND b.BarName = :bar_name AND b.ItemName in (SELECT bb.BeerName FROM Beers bb) \
+                        GROUP BY b.ItemName \
+                        ORDER BY Quantity DESC \
                         ')
-        rs = con.execute(query,bar_name=bar_name)
+        rs = con.execute(query,bar_name=bar_name, day=day)
+        if rs.rowcount is 0:
+            return None
+        results = [dict(row) for row in rs]
+        return results
+
+def get_days():
+    with engine.connect() as con:
+        query = sql.text('SELECT * FROM Dates')
+        rs = con.execute(query)
         if rs.rowcount is 0:
             return None
         results = [dict(row) for row in rs]

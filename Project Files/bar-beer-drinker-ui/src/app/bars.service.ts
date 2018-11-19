@@ -45,4 +45,12 @@ export class BarsService {
   getTopDrinkers(bar: string) {
     return this.http.get<any[]>('/api/bar-top-drinkers/' + bar)
   }
+
+  getTopSoldBeers(bar: string, day: string) {
+    return this.http.get<any[]>('/api/bar-top-sold-beers/' + bar)
+  }
+  
+  getDates() {
+    return this.http.get<any[]>('/api/days')
+  }
 }

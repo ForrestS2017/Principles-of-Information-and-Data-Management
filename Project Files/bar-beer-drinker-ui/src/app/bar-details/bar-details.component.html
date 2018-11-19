@@ -6,6 +6,9 @@
             <br>
             {{ barDetails?.Phone }}
         </p>
+        <p-dropdown *ngIf="days" [ngClass]="{ 'no-option-selected': selectedDay === undefined || selectedDay === null }"
+      placeholder="Filter By Day" [options]="days" [(ngModel)]="selectedDay" showClear="true"
+      (onChange)="filterBars($event.value)"></p-dropdown>
     </div>
 </div>
 
@@ -14,6 +17,8 @@
     <br>
     <div id="bargraph"></div>
 </div>
+
+<br>
 
 <div class="container">
     <br>
