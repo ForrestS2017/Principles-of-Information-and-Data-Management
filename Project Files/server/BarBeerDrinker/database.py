@@ -278,8 +278,8 @@ MANF PAGE
 
 
 def get_highest_sales(manf_name):
-    with engine.connect as con:
-        query = sql.text("select distinct b.manf, bi.TipTotal, ba.City from Beers b, Bills bi, Bars ba where b.manf = :manf_name and ba.BarName = bi.BarName and bi.ItemName in (select distinct b1.BeerName from Beers b1 where b1.manf = :manf_name) order by bi.TipTotal desc")
+    with engine.connect() as con:
+        query = sql.text("select distinct b.Manf, bi.TipTotal, ba.City from Beers b, Bills bi, Bars ba where b.Manf = :manf_name and ba.BarName = bi.BarName and bi.ItemName in (select distinct b1.BeerName from Beers b1 where b1.Manf = :manf_name) order by bi.TipTotal desc")
         rs = con.execute(query, manf_name=manf_name)
         if rs.rowcount is 0:
             return None
@@ -288,11 +288,16 @@ def get_highest_sales(manf_name):
 
 def get_liked_manfs(manf_name):
     with engine.connect() as con:
-        query = sql.text("select d.City, count(distinct d.FirstName) from Drinkers d, Likes l where d.FirstName = l.FirstName and d.LastName = l.LastName and l.beer in (select bb.BeerName from Beers bb where manf = :manf_name) group by d.City order by count(d.FirstName) desc")
-    rs = con.execute(query, manf_name=manf_name)
-    if rs.rowcount is 0:
-        return None
-    return [dict(row) for row in rs]
+        query = sql.text("select d.City, count(distinct d.FirstName) as Count from Drinkers d, Likes l where d.FirstName = l.FirstName and d.LastName = l.LastName and l.beer in (select bb.BeerName from Beers bb where bb.Manf = :manf_name) group by d.City order by count(d.FirstName) desc")
+        rs = con.execute(query, manf_name=manf_name)
+        if rs.rowcount is 0:
+            return None
+        return [dict(row) for row in rs]
+
+
+"""
+VERIFY PAGE
+"""
         
 def verify_pattern_1():
     with engine.connect() as con:

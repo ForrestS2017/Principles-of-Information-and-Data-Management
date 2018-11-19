@@ -1,3 +1,17 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Manufacturers</h1>
+    <p class="lead">This page can be used to look up manufacturer statistics.</p>
+    <p-dropdown *ngIf="Mnames" [ngClass]="{ 'no-option-selected': selectedManf === undefined || selectedManf === null }"
+      placeholder="Select a Manufacturer" [options]="Mnames" [(ngModel)]="selectedManf" showClear="true"
+      (onChange)="onOptionSelectedM($event.value)"></p-dropdown>
+  </div>
+</div>
+
 <p>
   manufacturers works!
+
+  Given manufacturer, show the regions (cities, states) where their sales are highest in last week.  
+  Show cities and states where their beers are liked the most (i.e. where do the most of drinkers who like their beers live) in last week?  
+  Sales of manufacturer are total sales of all beers that they produce.
 </p>

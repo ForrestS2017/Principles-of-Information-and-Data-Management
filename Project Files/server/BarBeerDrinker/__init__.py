@@ -218,6 +218,28 @@ def get_bar_frequent_counts():
         return jsonify(database.get_bar_frequent_counts())
     except Exception as e:
         return make_response(str(e), 500)
+
+@app.route('/api/manufacturer/<manf_name>/sales', methods=['GET'])
+def get_highest_sales(manf_name):
+    try:
+        if manf_name is None:
+            raise ValueError('Manufacturer does not exist.')
+        return jsonify(database.get_highest_sales(manf_name))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+
+@app.route('/api/manufacturer/<manf_name>/liked', methods=['GET'])
+def get_liked_manfs(manf_name):
+    try:
+        if manf_name is None:
+            raise ValueError('Manufacturer does not exist.')
+        return jsonify(database.get_liked_manfs(manf_name))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
         
 @app.route('/api/patterns/1', methods=['GET'])
 def verify_pattern_1():
