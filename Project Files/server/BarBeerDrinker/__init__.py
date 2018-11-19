@@ -163,7 +163,41 @@ def get_bar_frequent_counts():
         return jsonify(database.get_bar_frequent_counts())
     except Exception as e:
         return make_response(str(e), 500)
-
+        
+@app.route('/api/patterns/1', methods=['GET'])
+def verify_pattern_1():
+    try:
+        return jsonify(database.verify_pattern_1())
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route('/api/patterns/2', methods=['GET'])
+def verify_pattern_2():
+    try:
+        return jsonify(database.verify_pattern_2())
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route('/api/patterns/3', methods=['GET'])
+def verify_pattern_3():
+    try:
+        return jsonify(database.verify_pattern_3())
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route('/api/patterns/4', methods=['GET'])
+def verify_pattern_4():
+    try:
+        return jsonify(database.verify_pattern_4())
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route('/api/patterns/5', methods=['GET'])
+def verify_pattern_5():
+    try:
+        return jsonify(database.verify_pattern_5())
+    except Exception as e:
+        return make_response(str(e), 500)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path>', methods=["GET"])

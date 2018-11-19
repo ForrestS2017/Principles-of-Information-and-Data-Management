@@ -1,0 +1,91 @@
+=== PATTERN 1 ===
+Transactions/bills  cannot be issued  at times when the given bar is closed
+
+SELECT CASE WHEN
+NOT EXISTS (
+	SELECT bi.BillID, bi.Time, ba.OpenTime, ba.CloseTime
+	FROM Bills bi, Bars ba
+	WHERE bi.BarName = ba.BarName AND bi.Time < '24:00' 
+		AND (
+			(ba.OpenTime < ba.CloseTime AND (bi.Time < ba.OpenTime OR bi.Time > ba.CloseTime))
+			OR
+			(ba.OpenTime > ba.CloseTime AND (bi.Time < ba.OpenTime AND bi.Time > ba.CloseTime))
+		)
+)
+THEN 'TRUE'
+ELSE 'FALSE'
+END Verify1;
+
+*** NOTE: There are two cases here in our database
+    1) Bar's OpenTime < CloseTime (ex: Bar is open from 04:00-16:00)
+        This bar is open during the day
+    2) Bar's OpenTime > CloseTime (ex: Bar is open from 20:00-08:00)
+        This bar is open during the night
+    Which is why our query might look weirdly complicated. This accounts for both scenarios
+
+=== PATTERN 2 ===
+Drinkers cannot frequent bars in different state than they live.
+
+SELECT CASE WHEN
+NOT EXISTS (
+    SELECT d.FirstName, d.LastName, d.State, b.State
+    FROM Drinkers d, Frequents f, Bars b
+    WHERE d.FirstName = f.FirstName AND d.LastName = f.LastName AND b.BarName = f.BarName
+        AND b.State <> d.State
+)
+THEN 'TRUE'
+ELSE 'FALSE'
+END Verify2;
+    
+=== PATTERN 3 ===
+For every two beers, b1 and b2, different bars may charge differently for b1 and b2 but b1 should either be less expensive than b2 
+in ALL bars or more expensive than b2 in ALL bars.  Cannot be the case that in one bar Corona is more expensive than Bud and in another 
+Bud is more expensive than Corona.  But Corona may be more expensive than Bud in one bar, and have the same price as Bud in another.
+
+SELECT CASE WHEN 
+NOT EXISTS (
+	SELECT *
+	FROM Sells s1, Sells s2
+	WHERE s1.BarName <> s2.BarName AND s1.BeerName <> s2.BeerName AND s1.Price < s2.Price 
+	AND EXISTS(
+		SELECT *
+		FROM Sells s3
+		WHERE s3.BarName <> s1.BarName AND s3.BarName <> s2.BarName AND s3.BeerName = s1.BeerName
+			AND s3.Price > s2.Price
+	)
+)
+THEN 'TRUE'
+ELSE 'FALSE'
+END Verify3;
+
+=== PATTERN 4 ===
+Bar cannot sell more beers of specific brand, than it has in its inventory
+
+SELECT CASE WHEN
+NOT EXISTS (
+	SELECT *
+	FROM Inventory i2,
+		(SELECT b.BarName, b.ItemName, SUM(b.Quantity) AS TotalSales
+			FROM Bills b, Inventory i
+			WHERE b.BarName = i.BarName AND b.ItemName = i.Beername
+			GROUP BY b.BarName, b.ItemName) AS d
+	WHERE i2.BarName = d.BarName AND i2.BeerName = d.ItemName AND i2.Amount < d.TotalSales
+)
+THEN 'TRUE'
+ELSE 'FALSE'
+END Verify4;
+
+=== PATTERN 5 ===
+A bartender cannot work more  than one shift a day. 
+
+SELECT CASE WHEN
+NOT EXISTS (
+	SELECT *
+	FROM Shifts s1, Shifts s2
+	WHERE s1.EmployeeID = s2.EmployeeID AND s1.WeekDay = s2.WeekDay 
+		AND s1.StartTime <> s2.StartTime AND s1.EndTime <> s2.EndTime
+)
+THEN 'TRUE'
+ELSE 'FALSE'
+END Verify5;
+

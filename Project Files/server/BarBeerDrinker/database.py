@@ -237,4 +237,117 @@ def get_liked_manfs(manf_name):
     if rs.first() is None:
         return None
     return [dict(row) for row in rs]
-
+    
+def get_beer_manufacturers(beer):
+    with engine.connect() as con:
+        if beer is None:
+            rs = con.execute('SELECT DISTINCT Manf FROM Beers;')
+            return [row['Manf'] for row in rs]
+        query = sql.text('SELECT Manf FROM Beers WHERE BeerName = :beer;')
+        rs = con.execute(query, beer=beer)
+        result = rs.first()
+        if result is None:
+            return None
+        return result['Manf']
+        
+def verify_pattern_1():
+    with engine.connect() as con:
+        query = sql.text('SELECT CASE WHEN \
+            NOT EXISTS ( \
+                SELECT bi.BillID, bi.Time, ba.OpenTime, ba.CloseTime \
+                FROM Bills bi, Bars ba \
+                WHERE bi.BarName = ba.BarName \
+                    AND ( \
+                        (ba.OpenTime < ba.CloseTime AND (bi.Time < ba.OpenTime OR bi.Time > ba.CloseTime)) \
+                        OR \
+                        (ba.OpenTime > ba.CloseTime AND (bi.Time < ba.OpenTime AND bi.Time > ba.CloseTime)) \
+                    ) \
+            ) \
+            THEN \'TRUE\' \
+            ELSE \'FALSE\' \
+            END Verify;')
+        rs = con.execute(query)
+        result = rs.first()
+        if result is None:
+            return None
+        return [dict(result)]
+        
+def verify_pattern_2():
+    with engine.connect() as con:
+        query = sql.text('SELECT CASE WHEN \
+            NOT EXISTS ( \
+                SELECT d.FirstName, d.LastName, d.State, b.State \
+                FROM Drinkers d, Frequents f, Bars b \
+                WHERE d.FirstName = f.FirstName AND d.LastName = f.LastName AND b.BarName = f.BarName \
+                    AND b.State <> d.State \
+            ) \
+            THEN \'TRUE\' \
+            ELSE \'FALSE\' \
+            END Verify;')
+        rs = con.execute(query)
+        result = rs.first()
+        if result is None:
+            return None
+        return [dict(result)]
+        
+def verify_pattern_3():
+    with engine.connect() as con:
+        query = sql.text('SELECT CASE WHEN \
+            NOT EXISTS ( \
+                SELECT * \
+                FROM Sells s1, Sells s2 \
+                WHERE s1.BarName <> s2.BarName AND s1.BeerName <> s2.BeerName AND s1.Price < s2.Price  \
+                AND EXISTS( \
+                    SELECT * \
+                    FROM Sells s3 \
+                    WHERE s3.BarName <> s1.BarName AND s3.BarName <> s2.BarName AND s3.BeerName = s1.BeerName \
+                        AND s3.Price > s2.Price \
+                ) \
+            ) \
+            THEN \'TRUE\' \
+            ELSE \'FALSE\' \
+            END Verify;')
+        rs = con.execute(query)
+        result = rs.first()
+        if result is None:
+            return None
+        return [dict(result)]
+        
+def verify_pattern_4():
+    with engine.connect() as con:
+        query = sql.text('SELECT CASE WHEN \
+            NOT EXISTS ( \
+                SELECT * \
+                FROM Inventory i2, \
+                    (SELECT b.BarName, b.ItemName, SUM(b.Quantity) AS TotalSales \
+                        FROM Bills b, Inventory i \
+                        WHERE b.BarName = i.BarName AND b.ItemName = i.Beername \
+                        GROUP BY b.BarName, b.ItemName) AS d \
+                WHERE i2.BarName = d.BarName AND i2.BeerName = d.ItemName AND i2.Amount < d.TotalSales \
+            ) \
+            THEN \'TRUE\' \
+            ELSE \'FALSE\' \
+            END Verify;')
+        rs = con.execute(query)
+        result = rs.first()
+        if result is None:
+            return None
+        return [dict(result)]
+        
+def verify_pattern_5():
+    with engine.connect() as con:
+        query = sql.text('SELECT CASE WHEN \
+            NOT EXISTS ( \
+                SELECT * \
+                FROM Shifts s1, Shifts s2 \
+                WHERE s1.EmployeeID = s2.EmployeeID AND s1.WeekDay = s2.WeekDay  \
+                    AND s1.StartTime <> s2.StartTime AND s1.EndTime <> s2.EndTime \
+            ) \
+            THEN \'TRUE\' \
+            ELSE \'FALSE\' \
+            END Verify;')
+        rs = con.execute(query)
+        result = rs.first()
+        if result is None:
+            return None
+        return [dict(result)]

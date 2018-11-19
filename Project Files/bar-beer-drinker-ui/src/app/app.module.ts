@@ -20,6 +20,7 @@ import { ManufacturersComponent } from './manufacturers/manufacturers.component'
 import { ModificationsComponent } from './modifications/modifications.component';
 import { DrinkerDetailsComponent } from './drinker-details/drinker-details.component';
 import { BarsComponent } from './bars/bars.component';
+import { VerificationComponent } from './verification/verification.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { BarsComponent } from './bars/bars.component';
     ManufacturersComponent,
     ModificationsComponent,
     DrinkerDetailsComponent,
-    BarsComponent
+    BarsComponent,
+    VerificationComponent
   ],
   imports: [
     BrowserModule,
