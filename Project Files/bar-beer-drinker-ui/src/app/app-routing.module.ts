@@ -50,11 +50,6 @@ const routes: Routes = [
     component: InsightComponent
   },
   {
-    path: 'drinkers',
-    pathMatch: 'full',
-    component: DrinkersComponent
-  },
-  {
     path: 'manufacturers',
     pathMatch: 'full',
     component: ManufacturersComponent
@@ -68,6 +63,11 @@ const routes: Routes = [
     path: 'modifications',
     pathMatch: 'full',
     component: ModificationsComponent
+  },
+  {
+    path: 'drinkers',
+    pathMatch: 'full',
+    component: DrinkersComponent
   },
   {
     path: 'drinkers/:drinker',

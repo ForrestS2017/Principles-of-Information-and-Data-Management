@@ -25,12 +25,13 @@ export class BeersComponent implements OnInit {
       data => {
         this.manufacturerOptions = data.map(manf => {
           return {
-            label: manf,
-            value: manf,
+            label: manf.Manf,
+            value: manf.Manf,
           };
         });
       }
     );
+
   }
 
   ngOnInit() {

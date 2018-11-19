@@ -143,8 +143,8 @@ def get_beers():
 def get_beer_manufacturers(beer):
     with engine.connect() as con:
         if beer is None:
-            rs = con.execute('SELECT DISTINCT Manf FROM Beers;')
-            return [row['Manf'] for row in rs]
+            rs = con.execute('SELECT DISTINCT Manf FROM Beers ORDER BY Manf;')
+            return [dict(row) for row in rs]
         query = sql.text('SELECT Manf FROM Beers WHERE BeerName = :beer;')
         rs = con.execute(query, beer=beer)
         result = rs.first()

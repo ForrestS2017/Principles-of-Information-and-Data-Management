@@ -8,10 +8,24 @@
   </div>
 </div>
 
-<p>
-  manufacturers works!
+<div class="container">
+  <h2 class="text-center font-weight-light">Regions of Highest Revenue</h2>
+  <p-table [value]="manufacturers" [paginator]="true" [rows]="10">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>City</th>
+        <th>Revenue</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-beer>
+      <tr>
+        <td><a routerLink="/manufacturers/{{ manf.Manf }}/sales">{{ manf.Manf }}</a></td>
+        <td>{{ manf.City }}</td>
+        <td>{{ manf.TipTotal }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <br><br>
+</div>
 
-  Given manufacturer, show the regions (cities, states) where their sales are highest in last week.  
-  Show cities and states where their beers are liked the most (i.e. where do the most of drinkers who like their beers live) in last week?  
-  Sales of manufacturer are total sales of all beers that they produce.
-</p>
+

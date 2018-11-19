@@ -14,7 +14,10 @@ export class ManufacturersComponent implements OnInit {
   manfsList: Manufacturer[];
   Mnames: SelectItem[];
 
-  constructor(public manfService: ManufacturersService, private ref: ElementRef) { 
+  constructor(
+    public manfService: ManufacturersService, 
+    private ref: ElementRef
+    ) { 
     this.getManfs();
   }
 
@@ -26,8 +29,8 @@ export class ManufacturersComponent implements OnInit {
         return;
     }
     var manfName:Manufacturer = this.manfsList[event];
-    this.getHighestSales(manfName.Manf);
-    this.getLikedCities(manfName.Manf);
+    this.getHighestSales(event);
+    this.getLikedCities(event);
   }
 
   getManfs(){
@@ -41,12 +44,27 @@ export class ManufacturersComponent implements OnInit {
     )
   }
 
-  getHighestSales(name){
+  getHighestSales(manfName){
+    this.manfService.getHighestSales(manfName).subscribe(data => {
+      console.log(manfName)
+      console.log(data)
+      console.log("-------")
+      var cities:PopularCity[] = data;
+      console.log(cities);
+      console.log("++++++")
+      this.soldCities = cities;
+      console.log(this.soldCities[0])
+    },
+    error => {
+      alert('Could not retrieve a list of sales for ' + manfName)
+    }
+    );
+    this.soldCities
 
   }
 
-  getLikedCities(name){
-
+  getLikedCities(manfName){
+    this.likedCitiesCounts
   }
 
 }
