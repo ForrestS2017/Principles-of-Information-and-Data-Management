@@ -2,12 +2,9 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 
 import { DrinkersService, Drinker, Transaction, Bill, BeerPurchase, Spending } from '../drinkers.service';
 
-import * as CanvasJS from '../canvasjs.min';
+import { SelectItem } from 'primeng/components/common/selectitem';
 
-export interface Name {
-    value: number;
-    view: string;
-}
+import * as CanvasJS from '../canvasjs.min';
 
 export interface DataPoint {
     y: number;
@@ -23,11 +20,10 @@ export class DrinkersComponent implements OnInit {
     
   transactions: Transaction[];
   drinkers: Drinker[];
-  names: Name[];
-  selectedDrinker: string;
+  names: SelectItem[];
+  drinkerName: string;
 
   constructor(public drinkerService: DrinkersService, private ref: ElementRef) {
-      this.selectedDrinker = '';
       this.getDrinkers();
   }
 
@@ -36,7 +32,7 @@ export class DrinkersComponent implements OnInit {
   
   onOptionSelected(event) {
     var drinker:Drinker = this.drinkers[event];
-    this.selectedDrinker = drinker.FirstName + ' ' + drinker.LastName;
+    this.drinkerName = drinker.FirstName + ' ' + drinker.LastName;
     this.getTransactions(drinker.FirstName, drinker.LastName);
     this.makeBeerPurchaseChart(drinker.FirstName, drinker.LastName);
     this.makeSpendingChart(drinker.FirstName, drinker.LastName);
@@ -47,8 +43,8 @@ export class DrinkersComponent implements OnInit {
       data => {
         this.drinkers = data;
         var count:number = 0;
-        this.names = data.map(drinker => { return { value: count++, view: drinker.FirstName + ' ' + drinker.LastName }; })
-            .sort((a, b) => a.view.localeCompare(b.view));
+        this.names = data.map(drinker => { return { value: count++, label: drinker.FirstName + ' ' + drinker.LastName }; })
+            .sort((a, b) => a.label.localeCompare(b.label));
       },
       error => {
         alert('Could not retrieve a list of drinkers');
@@ -125,11 +121,11 @@ export class DrinkersComponent implements OnInit {
   makeBeerPurchaseChart(FirstName, LastName) {
       this.drinkerService.getBeerPurchases(FirstName, LastName).subscribe(data => {
           var dps:DataPoint[] = [];
-          let ordersChart = new CanvasJS.Chart("ordersChart", {
+          let ordersChart = new CanvasJS.Chart('ordersChart', {
               animationEnabled: true,
               exportEnabled: true,
               title: {
-                  text: this.selectedDrinker + "'s Most Ordered Beers"
+                  text: this.drinkerName + '\'s Most Ordered Beers'
               },
               data: [{
                   type: "column",
@@ -147,11 +143,11 @@ export class DrinkersComponent implements OnInit {
   makeSpendingChart(FirstName, LastName) {
       this.drinkerService.getSpending(FirstName, LastName).subscribe(data => {
           var dps:DataPoint[] = [];
-          let ordersChart = new CanvasJS.Chart("spendingChart", {
+          let ordersChart = new CanvasJS.Chart('spendingChart', {
               animationEnabled: true,
               exportEnabled: true,
               title: {
-                  text: this.selectedDrinker + "'s Spending Per Bar Per Day"
+                  text: this.drinkerName + '\'s Spending Per Bar Per Day'
               },
               data: [{
                   type: "column",
