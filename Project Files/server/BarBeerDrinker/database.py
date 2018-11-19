@@ -296,12 +296,12 @@ def verify_pattern_3():
             NOT EXISTS ( \
                 SELECT * \
                 FROM Sells s1, Sells s2 \
-                WHERE s1.BarName <> s2.BarName AND s1.BeerName <> s2.BeerName AND s1.Price < s2.Price  \
-                AND EXISTS( \
+                WHERE s1.BarName = s2.BarName AND s1.BeerName <> s2.BeerName AND s1.Price < s2.Price  \
+                AND EXISTS ( \
                     SELECT * \
-                    FROM Sells s3 \
-                    WHERE s3.BarName <> s1.BarName AND s3.BarName <> s2.BarName AND s3.BeerName = s1.BeerName \
-                        AND s3.Price > s2.Price \
+                    FROM Sells s3, Sells s4 \
+                    WHERE s3.BarName = s4.BarName AND s1.BeerName = s3.BeerName AND s2.BeerName = s4.BeerName \
+                        AND s3.Price > s4.Price \
                 ) \
             ) \
             THEN \'TRUE\' \
