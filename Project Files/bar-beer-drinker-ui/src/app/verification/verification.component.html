@@ -1,0 +1,142 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Verify the patterns!</h1>
+    <p class="lead">This page can be used to verify the five patterns in the datbase.</p>
+    <button (click)="onClickMe()">Run Queries</button>
+    <br>
+    <font color='#FF3030'><i>{{running}}</i></font>
+    <br><br>
+    Pattern 1: <font color='#1874CD'>{{result1}}</font>
+    <br>
+    Pattern 2: <font color='#1874CD'>{{result2}}</font>
+    <br>
+    Pattern 3: <font color='#1874CD'>{{result3}}</font>
+    <br>
+    Pattern 4: <font color='#1874CD'>{{result4}}</font>
+    <br>
+    Pattern 5: <font color='#1874CD'>{{result5}}</font>
+  </div>
+</div>
+
+<div class="container">
+
+  <font size=5><strong>Pattern 1:</strong></font>
+  <br>
+  Transactions/bills  cannot be issued  at times when the given bar is closed
+  <br><br>
+  <u>Query:</u>
+  <br>
+  <code>
+    SELECT CASE WHEN<br>
+    NOT EXISTS (<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SELECT bi.BillID, bi.Time, ba.OpenTime, ba.CloseTime<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;FROM Bills bi, Bars ba<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;WHERE bi.BarName = ba.BarName <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND (<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(ba.OpenTime < ba.CloseTime AND (bi.Time < ba.OpenTime OR bi.Time > ba.CloseTime))<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OR<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(ba.OpenTime > ba.CloseTime AND (bi.Time < ba.OpenTime AND bi.Time > ba.CloseTime))<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+    )<br>
+    THEN 'TRUE'<br>
+    ELSE 'FALSE'<br>
+    END Verify1;
+  </code>
+  
+  <br><br>
+  
+  <font size=5><strong>Pattern 2:</strong></font>
+  <br>
+  Drinkers cannot frequent bars in different state than they live
+  <br><br>
+  <u>Query:</u>
+  <br>
+  <code>
+    SELECT CASE WHEN<br>
+    NOT EXISTS (<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SELECT d.FirstName, d.LastName, d.State, b.State<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;FROM Drinkers d, Frequents f, Bars b<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;WHERE d.FirstName = f.FirstName AND d.LastName = f.LastName AND b.BarName = f.BarName<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND b.State <> d.State<br>
+    )<br>
+    THEN 'TRUE'<br>
+    ELSE 'FALSE'<br>
+    END Verify2;
+  </code>
+  
+  <br><br>
+  
+  <font size=5><strong>Pattern 3:</strong></font>
+  <br>
+  If a beer is less expensive than another beer in one bar, then it must be less expensive than that beer in all bars
+  <br><br>
+  <u>Query:</u>
+  <br>
+  <code>
+    SELECT CASE WHEN<br>
+    NOT EXISTS (<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SELECT *<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;FROM Sells s1, Sells s2<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;WHERE s1.BarName = s2.BarName AND s1.BeerName <> s2.BeerName AND s1.Price < s2.Price <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;AND EXISTS (<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT *<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FROM Sells s3, Sells s4<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE s3.BarName = s4.BarName AND s1.BeerName = s3.BeerName AND s2.BeerName = s4.BeerName<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND s3.Price > s4.Price<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;)<br>
+    )<br>
+    THEN 'TRUE'<br>
+    ELSE 'FALSE'<br>
+    END Verify3;
+  </code>
+  
+  <br><br>
+
+  <font size=5><strong>Pattern 4:</strong></font>
+  <br>
+  A bar cannot sell more beers of specific brand than it has in its inventory
+  <br><br>
+  <u>Query:</u>
+  <br>
+  <code>
+    SELECT CASE WHEN<br>
+    NOT EXISTS (<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SELECT *<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;FROM Inventory i2,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(SELECT b.BarName, b.ItemName, SUM(b.Quantity) AS TotalSales<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FROM Bills b, Inventory i<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE b.BarName = i.BarName AND b.ItemName = i.Beername<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GROUP BY b.BarName, b.ItemName) AS d<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;WHERE i2.BarName = d.BarName AND i2.BeerName = d.ItemName AND i2.Amount < d.TotalSales<br>
+    )<br>
+    THEN 'TRUE'<br>
+    ELSE 'FALSE'<br>
+    END Verify4;
+  </code>
+  
+  <br><br>
+  
+  <font size=5><strong>Pattern 5:</strong></font>
+  <br>
+  A bartender cannot work more than one shift a day
+  <br><br>
+  <u>Query:</u>
+  <br>
+  <code>
+    SELECT CASE WHEN<br>
+    NOT EXISTS (<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SELECT *<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;FROM Shifts s1, Shifts s2<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; WHERE s1.EmployeeID = s2.EmployeeID AND s1.WeekDay = s2.WeekDay <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND s1.StartTime <> s2.StartTime AND s1.EndTime <> s2.EndTime<br>
+    )<br>
+    THEN 'TRUE'<br>
+    ELSE 'FALSE'<br>
+    END Verify5;
+  </code>
+  
+  <br><br>
+  
+</div>
+
+<br><br>
