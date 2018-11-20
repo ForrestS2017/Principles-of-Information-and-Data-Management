@@ -12,6 +12,7 @@ import { ModificationsComponent } from './modifications/modifications.component'
 import { DrinkerDetailsComponent } from './drinker-details/drinker-details.component';
 import { BarsComponent } from './bars/bars.component';
 import { VerificationComponent } from './verification/verification.component';
+import { BartenderAnalyticsComponent } from './bartender-analytics/bartender-analytics.component';
 
 const routes: Routes = [
   {
@@ -78,6 +79,11 @@ const routes: Routes = [
     path: 'patterns',
     pathMatch: 'full',
     component: VerificationComponent
+  },
+  {
+      path: 'bartender_analytics',
+      pathMatch: 'full',
+      component: BartenderAnalyticsComponent
   }
 ];
 

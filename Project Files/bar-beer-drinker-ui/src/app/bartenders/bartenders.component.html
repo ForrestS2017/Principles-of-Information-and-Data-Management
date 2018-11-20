@@ -4,14 +4,14 @@
     <p class="lead">This page can be used to look up information about bartenders</p>
     <p-dropdown *ngIf="barSelect" [ngClass]="{ 'no-option-selected': selectedBar === undefined || selectedBar === null }"
       placeholder="Select a Bar" [options]="barSelect" [(ngModel)]="selectedBar" showClear="true"
-      (onChange)="getBartenders($event.value)"></p-dropdown>
+      (onChange)="getBartenders($event.value); selectedBartender = null;"></p-dropdown>
     <br><br>
     <ng-container>
       <span *ngIf="barName === undefined || barName === null || barName.length == 0"></span>
       <span *ngIf="barName !== undefined && barName !== null && barName.length > 0">
         <p-dropdown *ngIf="bartenderSelect" [ngClass]="{ 'no-option-selected': selectedBartender === undefined || selectedBartender === null }"
           placeholder="Select a Bartender" [options]="bartenderSelect" [(ngModel)]="selectedBartender" showClear="true"
-          (onChange)="getBartenderInfo($event.value)"></p-dropdown>
+          (onChange)="getBartenderInfo($event.value)" ></p-dropdown>
       </span>
     </ng-container>
   </div>

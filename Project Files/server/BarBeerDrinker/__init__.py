@@ -211,6 +211,34 @@ def get_bartenders_for_bar(name):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+        
+@app.route("/api/bars/<name>/shifts", methods=["GET"])
+def get_shifts_for_bar(name):
+    try:
+        if name is None:
+            raise ValueError('Bar is not specified.')
+        bar = database.find_bar(name)
+        if bar is None:
+            return make_response("No bar found with the given name.", 404)
+        return jsonify(database.get_shifts_for_bar(name))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route('/api/bars/<name>/shifts/<day>/<startTime>', methods=["GET"])
+def get_rankings_for_shift(name, day, startTime):
+    try:
+        if name is None:
+            raise ValueError('Bar is not specified.')
+        bar = database.find_bar(name)
+        if bar is None:
+            return make_response("No bar found with the given name.", 404)
+        return jsonify(database.get_rankings_for_shift(name, day, startTime))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
 
 @app.route('/api/frequents-data', methods=['GET'])
 def get_bar_frequent_counts():

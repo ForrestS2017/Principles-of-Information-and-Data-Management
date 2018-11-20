@@ -270,7 +270,27 @@ def get_bartenders_for_bar(bar_name):
         rs = con.execute(query, bar=bar_name)
         return [dict(row) for row in rs]
 
-## TODO: BARTENDER ANALYTICS ##
+def get_shifts_for_bar(bar_name):
+    with engine.connect() as con:
+        query = sql.text('SELECT s.StartTime, s.EndTime, s.WeekDay \
+            FROM Schedules c, Shifts s \
+            WHERE c.EmployeeID = s.EmployeeID AND c.BarName = :bar')
+        rs = con.execute(query, bar=bar_name)
+        return [dict(row) for row in rs]
+        
+def get_rankings_for_shift(bar_name, day, start_time):
+    # THIS DON'T WORK
+    with engine.connect() as con:
+        query = sql.text('SELECT t.FirstName, t.LastName, CAST(SUM(b.Quantity) AS UNSIGNED) as BeersSold \
+            FROM Bartenders t, Shifts s, Schedules c, Bills b, Dates d \
+            WHERE t.EmployeeID = s.EmployeeID AND s.EmployeeID = c.EmployeeID \
+                AND c.BarName = :bar AND c.BarName = b.BarName \
+                AND b.ItemName IN (SELECT BeerName FROM Beers) \
+                AND s.StartTime = :startTime \
+                AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
+                AND d.Date = b.Date AND d.Weekday = :day')
+        rs = con.execute(query, bar=bar_name, day=day, startTime=start_time)
+        return [dict(row) for row in rs]
 
 """
 MANF PAGE
@@ -334,6 +354,7 @@ def verify_pattern_2():
             ELSE \'FALSE\' \
             END Verify;')
         rs = con.execute(query)
+        #result = { 'Verify': 'TRUE' }
         result = rs.first()
         if result is None:
             return None
@@ -396,6 +417,7 @@ def verify_pattern_5():
             ELSE \'FALSE\' \
             END Verify;')
         rs = con.execute(query)
+        #result = { 'Verify': 'TRUE' }
         result = rs.first()
         if result is None:
             return None

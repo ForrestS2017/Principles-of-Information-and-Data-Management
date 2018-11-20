@@ -94,7 +94,11 @@ export class BartendersComponent implements OnInit {
       // Corbin Shaffer
       this.http.get<Sale[]>('/api/bartenders/' + bartender.FirstName + '_' + bartender.LastName + '/sales').subscribe(
         data => {
-            this.sales = data;
+            if (data == null) {
+                this.sales = [{ ItemName: 'No beers sold', TotalSold: -1 }];
+            } else {
+                this.sales = data;
+            }
         }, error => {
             alert('Could not retrieve a list of bartender shifts');
         }
