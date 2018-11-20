@@ -13,7 +13,6 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { BarDetailsComponent } from './bar-details/bar-details.component';
 import { BeerDetailsComponent } from './beer-details/beer-details.component';
 import { BeersComponent } from './beers/beers.component';
-import { InsightComponent } from './insight/insight.component';
 import { BartendersComponent } from './bartenders/bartenders.component';
 import { DrinkersComponent } from './drinkers/drinkers.component';
 import { ManufacturersComponent } from './manufacturers/manufacturers.component';
@@ -30,7 +29,6 @@ import { BartenderAnalyticsComponent } from './bartender-analytics/bartender-ana
     BarDetailsComponent,
     BeerDetailsComponent,
     BeersComponent,
-    InsightComponent,
     BartendersComponent,
     DrinkersComponent,
     ManufacturersComponent,

@@ -4,7 +4,6 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { BarDetailsComponent } from './bar-details/bar-details.component';
 import { BeerDetailsComponent } from './beer-details/beer-details.component';
 import { BeersComponent } from './beers/beers.component';
-import { InsightComponent } from './insight/insight.component';
 import { BartendersComponent } from './bartenders/bartenders.component';
 import { DrinkersComponent } from './drinkers/drinkers.component';
 import { ManufacturersComponent } from './manufacturers/manufacturers.component';
@@ -44,11 +43,6 @@ const routes: Routes = [
     path: 'beers/:beer',
     pathMatch: 'full',
     component: BeerDetailsComponent
-  },
-  {
-    path: 'insight',
-    pathMatch: 'full',
-    component: InsightComponent
   },
   {
     path: 'manufacturers',
