@@ -103,6 +103,34 @@ def get_manufacturers_making(beer):
         return make_response(str(e), 500)
 
 
+@app.route("/api/beer-top-bars/<beer>", methods=["GET"])
+def get_beer_top_bars(beer):
+    try:
+        return jsonify(database.get_beer_top_bars(beer))
+    except Exception as e:
+        return make_response(str(e), 500)
+
+
+@app.route("/api/beer-top-drinkers/<beer>", methods=["GET"])
+def get_beer_top_drinkers(beer):
+    try:
+        return jsonify(database.get_beer_top_drinkers(beer))
+    except Exception as e:
+        return make_response(str(e), 500)
+
+
+@app.route('/api/bars-selling/<beer>', methods=['GET'])
+def find_bars_selling(beer):
+    try:
+        if beer is None:
+            raise ValueError('Beer not specified')
+        return jsonify(database.get_bars_selling(beer))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+
+
 @app.route("/api/likes", methods=["GET"])
 def get_likes():
     try:
@@ -160,17 +188,6 @@ def get_drinker_spending_per_bar_per_day(FirstName, LastName):
         if FirstName is None and LastName is None:
             raise ValueError("First name and last name of drinker are not fully specified.")
         return jsonify(database.get_drinker_spend_per_bar_per_day(FirstName, LastName))
-    except ValueError as e:
-        return make_response(str(e), 400)
-    except Exception as e:
-        return make_response(str(e), 500)
-
-@app.route('/api/bars-selling/<beer>', methods=['GET'])
-def find_bars_selling(beer):
-    try:
-        if beer is None:
-            raise ValueError('Beer not specified')
-        return jsonify(database.get_bars_selling(beer))
     except ValueError as e:
         return make_response(str(e), 400)
     except Exception as e:

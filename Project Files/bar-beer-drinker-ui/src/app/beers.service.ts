@@ -7,6 +7,16 @@ export interface BeerLocation {
   customers: number;
 }
 
+export interface TopBar {
+  BarName: string;
+  Quantity: number;
+}
+
+export interface TopDrinker {
+  DName: string;
+  Quantity: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,6 +37,14 @@ export class BeersService {
       return this.http.get<string>(`/api/beer-manufacturer/${beer}`);
     }
     return this.http.get<string[]>('/api/beer-manufacturer');
+  }
+
+  getBeerTopBars(beer: string) {
+    return this.http.get<TopBar[]>('/api/beer-top-bars/' + beer);
+  }
+
+  getBeerTopDrinkers(beer: string) {
+    return this.http.get<TopDrinker[]>('/api/beer-top-drinkers/' + beer);
   }
 
 }

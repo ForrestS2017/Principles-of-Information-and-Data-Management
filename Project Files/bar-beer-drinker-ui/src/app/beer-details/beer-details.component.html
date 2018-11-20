@@ -14,13 +14,11 @@
     <p-dropdown class="float-right text-left" *ngIf="filterOptions" [options]="filterOptions" (onChange)="sortBy($event.value)"></p-dropdown>
   </div>
   <br>
-  <p-table [value]="beerLocations" sortMode="multiple" sortField="price">
+  <p-table [value]="beerLocations" sortMode="multiple" sortField="customers">
     <ng-template pTemplate="header">
       <tr>
         <th>Bar</th>
-        <th>
-          Price
-        </th>
+        <th>Price</th>
         <th>Customers</th>
       </tr>
     </ng-template>
@@ -33,3 +31,18 @@
     </ng-template>
   </p-table>
 </div>
+
+<br><br>
+
+<div class="container">
+  <ng-container>
+      <br><br>
+      <div id="topBarsChart" style="height: 400px; width: 100%;"></div>
+      <br><br>
+      <div id="topDrinkersChart" style="height: 400px; width: 100%;"></div>
+  </ng-container>
+</div>
+
+<br><br>
+
+

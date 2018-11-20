@@ -153,6 +153,42 @@ def get_beer_manufacturers(beer):
         return result['Manf']
 
 
+def get_beer_top_bars(beer):
+    with engine.connect() as con:
+        query = sql.text('select BarName, sum(Quantity) as Quantity \
+                        from Bills \
+                        where ItemName = :beer \
+                        group by BarName \
+                        order by sum(Quantity) desc limit 10') 
+        rs = con.execute(query, beer=beer)
+        results = [dict(row) for row in rs]
+        for thisdict in results:            
+            target = list(thisdict.keys())
+            target = target[1]
+            thisdict[target] = int(thisdict[target])
+        return results
+
+
+def get_beer_top_drinkers(beer):
+    with engine.connect() as con:
+        query = sql.text('select p.FirstName as DName, sum(Quantity) as Quantity \
+                        from Bills b, Pays p \
+                        where ItemName = :beer and p.BillID = b.BillID \
+                        group by p.FirstName \
+                        order by Quantity desc limit 20') 
+        rs = con.execute(query, beer=beer)
+        results = [dict(row) for row in rs]
+        for thisdict in results:            
+            target = list(thisdict.keys())
+            target = target[1]
+            thisdict[target] = int(thisdict[target])
+        return results
+
+"""
+DRINKER PAGE
+"""
+
+
 def get_drinkers():
     with engine.connect() as con:
         rs = con.execute('SELECT * FROM Drinkers;')
@@ -175,10 +211,6 @@ def get_drinker_info(drinker_first_name, drinker_last_name):
         if result is None:
             return None
         return dict(result)   
-
-"""
-DRINKER PAGE
-"""
 
 
 def get_drinker_transactions(first_name, last_name):
