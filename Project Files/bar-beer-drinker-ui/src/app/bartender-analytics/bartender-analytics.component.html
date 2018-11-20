@@ -18,6 +18,14 @@
           (onChange)="setShift($event.value)"></p-dropdown>
       </span>
     </ng-container>
+    <ng-container>
+      <span *ngIf="done === undefined || done === 0"></span>
+      <span *ngIf="done !== undefined && done !== 0">
+        <br><br>
+        Loading. . .<br>
+        Fetching data, please be patient
+      </span>
+    </ng-container>
   </div>
 </div>
 

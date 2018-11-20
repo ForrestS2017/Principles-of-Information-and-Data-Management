@@ -19,11 +19,13 @@ export class ManufacturersComponent implements OnInit {
   likedCitiesCounts: LikedCity[];
   manfsList: Manufacturer[];
   Mnames: SelectItem[];
+  done: number;
 
   constructor(
     public manfService: ManufacturersService, 
     private ref: ElementRef
-    ) { 
+    ) {
+    this.done = 1;
     this.getManfs();
   }
 
@@ -34,6 +36,7 @@ export class ManufacturersComponent implements OnInit {
     if (event == null) {
         return;
     }
+    this.done = 2;
     var manfName:Manufacturer = this.manfsList[event];
     this.getHighestSalesChart(event);
     this.getLikedCitiesChart(event);
@@ -45,7 +48,9 @@ export class ManufacturersComponent implements OnInit {
         this.manfsList = data;
         this.Mnames = data.map(manfName => { return {
             value: manfName.Manf, 
-            label: manfName.Manf }; })
+            label: manfName.Manf }; 
+        })
+        this.done = 0;
       }
     )
   }
@@ -69,6 +74,7 @@ export class ManufacturersComponent implements OnInit {
         dps.push({ y: sale.TipTotal, label: sale.City });
       }
       salesChart.render();
+      this.done--;
     });
   }
 
@@ -79,7 +85,7 @@ export class ManufacturersComponent implements OnInit {
         animationEnabled: true,
         exportEnabled: true,
         title: {
-          text: manfName + ' -  Most Popular Manufactuers'
+          text: manfName + ' -  Most Popular in These Cities'
         },
         data: [{
           type: "column",
@@ -91,6 +97,7 @@ export class ManufacturersComponent implements OnInit {
         dps.push({ y: sale.Count, label: sale.City });
       }
       popularChart.render();
+      this.done--;
     });
   }
 

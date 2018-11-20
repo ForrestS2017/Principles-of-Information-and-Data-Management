@@ -1,7 +1,7 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-4">Bartenders</h1>
-    <p class="lead">This page can be used to look up information about bartenders. Select a Bartender from the dropdown. Don't worry as the data may take a minute!</p>
+    <p class="lead">This page can be used to look up information about bartenders. Select a Bartender from the dropdown menu.</p>
     <p-dropdown *ngIf="barSelect" [ngClass]="{ 'no-option-selected': selectedBar === undefined || selectedBar === null }"
       placeholder="Select a Bar" [options]="barSelect" [(ngModel)]="selectedBar" showClear="true"
       (onChange)="getBartenders($event.value); selectedBartender = null;"></p-dropdown>
@@ -12,6 +12,14 @@
         <p-dropdown *ngIf="bartenderSelect" [ngClass]="{ 'no-option-selected': selectedBartender === undefined || selectedBartender === null }"
           placeholder="Select a Bartender" [options]="bartenderSelect" [(ngModel)]="selectedBartender" showClear="true"
           (onChange)="getBartenderInfo($event.value)" ></p-dropdown>
+      </span>
+    </ng-container>
+    <ng-container>
+      <span *ngIf="done === undefined || done === 0"></span>
+      <span *ngIf="done !== undefined && done !== 0">
+        <br><br>
+        Loading. . .<br>
+        Fetching data, please be patient
       </span>
     </ng-container>
   </div>

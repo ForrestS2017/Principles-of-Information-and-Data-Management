@@ -22,6 +22,7 @@ export class DrinkersComponent implements OnInit {
   drinkers: Drinker[];
   names: SelectItem[];
   drinkerName: string;
+  done: number;
 
   constructor(public drinkerService: DrinkersService, private ref: ElementRef) {
       this.getDrinkers();
@@ -36,12 +37,14 @@ export class DrinkersComponent implements OnInit {
     }
     var drinker:Drinker = this.drinkers[event];
     this.drinkerName = drinker.FirstName + ' ' + drinker.LastName;
+    this.done = 3;
     this.getTransactions(drinker.FirstName, drinker.LastName);
     this.makeBeerPurchaseChart(drinker.FirstName, drinker.LastName);
     this.makeSpendingChart(drinker.FirstName, drinker.LastName);
   }
   
   getDrinkers() {
+    this.done = 1;
     this.drinkerService.getDrinkers().subscribe(
       data => {
         this.drinkers = data;
@@ -52,6 +55,7 @@ export class DrinkersComponent implements OnInit {
       error => {
         alert('Could not retrieve a list of drinkers');
       }
+      this.done = 0;
     );
   }
   
@@ -114,6 +118,7 @@ export class DrinkersComponent implements OnInit {
           currentTransaction.ItemString = currentTransaction.Items.map((item) => item.ItemName + ': $' + item.Price +  ' (x' + item.Quantity + ')\n').join('');
           Transactions.push(currentTransaction);
           this.transactions = Transactions;
+          this.done--;
       },
       error => {
         alert('Could not retrieve a list of transactions for ' + FirstName + ' ' + LastName);
@@ -141,6 +146,7 @@ export class DrinkersComponent implements OnInit {
           }
           console.log(ordersChart)
           ordersChart.render();
+          this.done--;
       });
   }
   
@@ -163,6 +169,7 @@ export class DrinkersComponent implements OnInit {
               dps.push({ y: spending.Total, label: spending.Date + ' ' + spending.BarName });
           }
           ordersChart.render();
+          this.done--;
       });
   }
 

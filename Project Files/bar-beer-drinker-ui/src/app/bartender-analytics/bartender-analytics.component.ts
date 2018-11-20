@@ -34,6 +34,7 @@ export class BartenderAnalyticsComponent implements OnInit {
   shifts: Shift[];
   rankings: Ranking[];
   sales: Sale[];
+  done: number;
 
   constructor(public barService: BarsService, public http: HttpClient) { 
     this.days = [
@@ -45,6 +46,7 @@ export class BartenderAnalyticsComponent implements OnInit {
         { value: 'Friday', label: 'Friday' },
         { value: 'Saturday', label: 'Saturday' }
     ];
+    this.done = 1;
     this.getBars();
   }
 
@@ -62,18 +64,20 @@ export class BartenderAnalyticsComponent implements OnInit {
       error => {
         alert('Could not retrieve a list of bars');
       }
+      this.done = 0;
     );
   }
   
   getBartenders(barValue) {
-      if (barValue == null) {
+      this.shiftName = null;
+      this.dayName = null;
+      if (barValue === null) {
           this.barName = null;
-          this.shiftName = null;
-          this.dayName = null;
           return;
       }
       var bar:Bar = this.bars[barValue];
       this.barName = bar.BarName;
+      this.done = 1;
       this.http.get<Shift[]>('/api/bars/' + this.barName + '/shifts').subscribe(
         data => {
             this.shifts = data;
@@ -83,11 +87,12 @@ export class BartenderAnalyticsComponent implements OnInit {
         }, error => {
             alert('Could not retrieve a list of shifts');
         }
+        this.done = 0;
       );
   }
   
   setShift(shiftValue) {
-      if (shiftValue == null) {
+      if (shiftValue === null) {
           this.shiftName = null;
           return;
       }
@@ -107,13 +112,21 @@ export class BartenderAnalyticsComponent implements OnInit {
   }
   
   getRankingInfo() {
+      this.done = 1;
       this.http.get<BartenderSales[]>('/api/bars/' + this.barName + '/shifts/' + this.dayName + '/' + this.startTime).subscribe(
         data => {
             var r = 1;
-            this.rankings = data.map(sale => { return { Rank: r++, Bartender: sale.FirstName + ' ' + sale.LastName, BeersSold: sale.BeersSold }; });
+            this.rankings = data.map(sale => { 
+                return { 
+                    Rank: sale.BeersSold !== null ? r++ : 0, 
+                    Bartender: sale.FirstName !== null && sale.LastName !== null ? sale.FirstName + ' ' + sale.LastName : "No bartenders sold any beers during this time", 
+                    BeersSold: sale.BeersSold !== null ? sale.BeersSold : -1
+                }; 
+            });
         }, error => {
             alert('Could not retrieve a ranking of bartenders');
         }
+        this.done = 0;
       );
   }
   

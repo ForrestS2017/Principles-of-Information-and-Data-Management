@@ -35,6 +35,7 @@ export class BartendersComponent implements OnInit {
   bartenderSelect: SelectItem[];
   shifts: Shift[];
   sales: Sale[];
+  done: number;
 
   constructor(public barService: BarsService, public http: HttpClient) { 
     this.getBars();
@@ -44,6 +45,7 @@ export class BartendersComponent implements OnInit {
   }
 
   getBars() {
+    this.done = 1;
     this.barService.getBars().subscribe(
       data => {
         this.bars = data;
@@ -54,6 +56,7 @@ export class BartendersComponent implements OnInit {
       error => {
         alert('Could not retrieve a list of bars');
       }
+      this.done = 0;
     );
   }
   
@@ -63,6 +66,7 @@ export class BartendersComponent implements OnInit {
           this.bartenderName = null;
           return;
       }
+      this.done = 1;
       var bar:Bar = this.bars[barValue];
       this.barName = bar.BarName;
       this.http.get<Bartender[]>('/api/bars/' + this.barName + '/bartenders').subscribe(
@@ -74,6 +78,7 @@ export class BartendersComponent implements OnInit {
         }, error => {
             alert('Could not retrieve a list of bartenders');
         }
+        this.done = 0;
       );
   }
   
@@ -82,6 +87,7 @@ export class BartendersComponent implements OnInit {
           this.bartenderName = null;
           return;
       }
+      this.done = 2;
       var bartender:Bartender = this.bartenders[bartenderValue];
       this.bartenderName = bartender.FirstName + ' ' + bartender.LastName;
       this.http.get<Shift[]>('/api/bartenders/' + bartender.FirstName + '_' + bartender.LastName + '/shifts').subscribe(
@@ -90,6 +96,7 @@ export class BartendersComponent implements OnInit {
         }, error => {
             alert('Could not retrieve a list of bartender shifts');
         }
+        this.done--;
       );
       // Corbin Shaffer
       this.http.get<Sale[]>('/api/bartenders/' + bartender.FirstName + '_' + bartender.LastName + '/sales').subscribe(
@@ -102,6 +109,7 @@ export class BartendersComponent implements OnInit {
         }, error => {
             alert('Could not retrieve a list of bartender shifts');
         }
+        this.done--;
       );
   }
   
