@@ -1,6 +1,12 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { ManufacturersService, Manufacturer, PopularCity, LikedCity } from '../manufacturers.service';
 import { SelectItem } from 'primeng/components/common/selectitem';
+import * as CanvasJS from '../canvasjs.min'
+
+export interface DataPoint {
+  y: number;
+  label: string;
+}
 
 @Component({
   selector: 'app-manufacturers',
@@ -29,8 +35,8 @@ export class ManufacturersComponent implements OnInit {
         return;
     }
     var manfName:Manufacturer = this.manfsList[event];
-    this.getHighestSales(event);
-    this.getLikedCities(event);
+    this.getHighestSalesChart(event);
+    this.getLikedCitiesChart(event);
   }
 
   getManfs(){
@@ -44,27 +50,48 @@ export class ManufacturersComponent implements OnInit {
     )
   }
 
-  getHighestSales(manfName){
+  getHighestSalesChart(manfName){
     this.manfService.getHighestSales(manfName).subscribe(data => {
-      console.log(manfName)
-      console.log(data)
-      console.log("-------")
-      var cities:PopularCity[] = data;
-      console.log(cities);
-      console.log("++++++")
-      this.soldCities = cities;
-      console.log(this.soldCities[0])
-    },
-    error => {
-      alert('Could not retrieve a list of sales for ' + manfName)
-    }
-    );
-    this.soldCities
-
+      var dps:DataPoint[] = [];
+      let salesChart = new CanvasJS.Chart('salesChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: manfName + ' - Highest Sales Regions'
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      for(var i:number = 0; i < data.length; i++){
+        var sale:PopularCity = data[i];
+        dps.push({ y: sale.TipTotal, label: sale.City });
+      }
+      salesChart.render();
+    });
   }
 
-  getLikedCities(manfName){
-    this.likedCitiesCounts
+  getLikedCitiesChart(manfName){
+    this.manfService.getLikedCities(manfName).subscribe(data => {
+      var dps:DataPoint[] = [];
+      let popularChart = new CanvasJS.Chart('popularChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: manfName + ' -  Most Popular Manufactuers'
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      for(var i:number = 0; i < data.length; i++){
+        var sale:LikedCity = data[i];
+        dps.push({ y: sale.Count, label: sale.City });
+      }
+      popularChart.render();
+    });
   }
 
 }

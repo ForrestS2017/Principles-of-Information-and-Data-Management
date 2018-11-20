@@ -13,7 +13,7 @@ export interface PopularCity {
 
 export interface LikedCity {
   City: string;
-  Count: string;
+  Count: number;
 }
 
 @Injectable({

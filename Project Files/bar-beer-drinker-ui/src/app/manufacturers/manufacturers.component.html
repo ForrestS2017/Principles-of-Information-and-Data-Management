@@ -9,23 +9,14 @@
 </div>
 
 <div class="container">
-  <h2 class="text-center font-weight-light">Regions of Highest Revenue</h2>
-  <p-table [value]="manufacturers" [paginator]="true" [rows]="10">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>City</th>
-        <th>Revenue</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-beer>
-      <tr>
-        <td><a routerLink="/manufacturers/{{ manf.Manf }}/sales">{{ manf.Manf }}</a></td>
-        <td>{{ manf.City }}</td>
-        <td>{{ manf.TipTotal }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
-  <br><br>
+  <ng-container>
+      <br><br>
+      <div id="salesChart" style="height: 400px; width: 100%;"></div>
+      <br><br>
+      <div id="popularChart" style="height: 400px; width: 100%;"></div>
+  </ng-container>
 </div>
+
+<br><br>
 
 
