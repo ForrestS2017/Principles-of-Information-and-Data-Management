@@ -65,7 +65,7 @@ def get_bar_top_drinkers(bar_name):
     except Exception as e:
         return make_response(str(e), 500)
 
-@app.route("/api/bar-top-sold-beers/<bar_name>_<day>", methods=["GET"])
+@app.route("/api/bar-top-sold-beers/<bar_name>/day/<path:day>", methods=["GET"])
 def get_bar_top_sold_beers(bar_name, day):
     try:
         return jsonify(database.get_bar_top_sold_beers(bar_name, day))
