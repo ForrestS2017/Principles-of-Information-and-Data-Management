@@ -70,7 +70,7 @@ export class BarDetailsComponent implements OnInit {
 
       this.barService.getTopSoldBeers(this.barName, this.selectedDay).subscribe(
         data => {
-          console.log(data);
+          console.log('HELLO');
   
           const names = [];
           const amounts = [];
@@ -80,9 +80,9 @@ export class BarDetailsComponent implements OnInit {
             amounts.push(bar.Quantity);
           });
           console.log('ablablablablablab');
-          console.log(names);
-          console.log(amounts);
-          this.renderChart2(names, amounts);
+          //console.log(names);
+          //console.log(amounts);
+          //this.renderChart2(names, amounts);
         }
       );
 
@@ -99,7 +99,7 @@ export class BarDetailsComponent implements OnInit {
   }
 
   renderChart(names: string[], amounts: number[]) {
-    Highcharts.chart('bargraph', {
+    Highcharts.chart('mytest', {
       chart: {
         type: 'column'
       },
@@ -138,7 +138,7 @@ export class BarDetailsComponent implements OnInit {
         data: amounts
       }]
     });
-  }
+  };
 
   renderChart2(bnames: string[], bamounts: number[]) {
     Highcharts.chart('bargraph2', {
