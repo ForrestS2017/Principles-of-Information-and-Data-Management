@@ -9,6 +9,8 @@
         <p-dropdown *ngIf="days" [ngClass]="{ 'no-option-selected': selectedDay === undefined || selectedDay === null }"
       placeholder="Filter By Day" [options]="days" [(ngModel)]="selectedDay" showClear="true"
       (onChange)="filterBars($event.value)"></p-dropdown>
+      <br>
+       *Select a date from the dropdown to show more!
     </div>
 </div>
 

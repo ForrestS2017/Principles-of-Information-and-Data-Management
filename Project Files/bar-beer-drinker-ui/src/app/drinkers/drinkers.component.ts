@@ -139,6 +139,7 @@ export class DrinkersComponent implements OnInit {
               var bp:BeerPurchase = data[i];
               dps.push({ y: bp.Total, label: bp.ItemName });
           }
+          console.log(ordersChart)
           ordersChart.render();
       });
   }

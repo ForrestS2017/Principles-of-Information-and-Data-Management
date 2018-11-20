@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { BeersService, BeerLocation } from '../beers.service';
+import { BeersService, BeerLocation, TopBar, TopDrinker } from '../beers.service';
 import { ActivatedRoute } from '@angular/router';
-
 import { SelectItem } from 'primeng/components/common/selectitem';
+import * as CanvasJS from '../canvasjs.min'
+
+export interface DataPoint {
+  y: number;
+  label: string;
+}
 
 @Component({
   selector: 'app-beer-details',
@@ -19,6 +24,9 @@ export class BeerDetailsComponent implements OnInit {
   sortField: string;
   sortOrder: number;
 
+  topBars: TopBar[];
+  topDrinkers: TopDrinker[];
+
   constructor(
     private beerService: BeersService,
     private route: ActivatedRoute
@@ -32,22 +40,36 @@ export class BeerDetailsComponent implements OnInit {
         }
       );
 
-      this.beerService.getBeerManufacturers(this.beerName)
-        .subscribe(
-          data => {
-            this.manufacturer = data;
-          }
-        );
+      this.beerService.getBeerManufacturers(this.beerName).subscribe(
+        data => {
+          this.manufacturer = data;
+        }
+      );
+
+      this.beerService.getBeerTopBars(this.beerName).subscribe(
+        data => {
+          this.topBars = data;
+        }
+      );
+
+      this.beerService.getBeerTopDrinkers(this.beerName).subscribe(
+        data => {
+          this.topDrinkers = data;
+        }
+      );
+
+      this.getBeerTopBarsChart(this.beerName);
+      this.getBeerTopDrinkersChart(this.beerName);
 
       this.filterOptions = [
-        {
+        /*{
           'label': 'Low price first',
           'value': 'low price'
         },
         {
           'label': 'High price first',
           'value': 'high price'
-        },
+        },*/
         {
           'label': 'Most frequented first',
           'value': 'high customer'
@@ -83,6 +105,48 @@ export class BeerDetailsComponent implements OnInit {
     }
   }
 
+  getBeerTopBarsChart(beerName){
+    this.beerService.getBeerTopBars(beerName).subscribe(data => {
+      var dps:DataPoint[] = [];
+      let topBarsChart = new CanvasJS.Chart('topBarsChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: 'Top 10 Bars Selling ' + beerName
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      for(var i:number = 0; i < data.length; i++){
+        var bbar:TopBar = data[i];
+        dps.push({ y: bbar.Quantity, label: bbar.BarName });
+      }
+      topBarsChart.render();
+    });
+  }
 
+  getBeerTopDrinkersChart(beerName){
+    this.beerService.getBeerTopDrinkers(beerName).subscribe(data => {
+      var dps:DataPoint[] = [];
+      let topDrinkersChart = new CanvasJS.Chart('topDrinkersChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: 'Top 20 People Drinking ' + beerName
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      for(var i:number = 0; i < data.length; i++){
+        var ddrinker:TopDrinker = data[i];
+        dps.push({ y: ddrinker.Quantity, label: ddrinker.DName });
+      }
+      topDrinkersChart.render();
+    });
+  }
 
 }

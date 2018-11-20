@@ -65,7 +65,7 @@ def get_bar_top_drinkers(bar_name):
     except Exception as e:
         return make_response(str(e), 500)
 
-@app.route("/api/bar-top-sold-beers/<bar_name>_<day>", methods=["GET"])
+@app.route("/api/bar-top-sold-beers/<bar_name>/day/<path:day>", methods=["GET"])
 def get_bar_top_sold_beers(bar_name, day):
     try:
         return jsonify(database.get_bar_top_sold_beers(bar_name, day))
@@ -99,6 +99,34 @@ def get_beer_manufacturers():
 def get_manufacturers_making(beer):
     try:
         return jsonify(database.get_beer_manufacturers(beer))
+    except Exception as e:
+        return make_response(str(e), 500)
+
+
+@app.route("/api/beer-top-bars/<beer>", methods=["GET"])
+def get_beer_top_bars(beer):
+    try:
+        return jsonify(database.get_beer_top_bars(beer))
+    except Exception as e:
+        return make_response(str(e), 500)
+
+
+@app.route("/api/beer-top-drinkers/<beer>", methods=["GET"])
+def get_beer_top_drinkers(beer):
+    try:
+        return jsonify(database.get_beer_top_drinkers(beer))
+    except Exception as e:
+        return make_response(str(e), 500)
+
+
+@app.route('/api/bars-selling/<beer>', methods=['GET'])
+def find_bars_selling(beer):
+    try:
+        if beer is None:
+            raise ValueError('Beer not specified')
+        return jsonify(database.get_bars_selling(beer))
+    except ValueError as e:
+        return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
 
@@ -160,17 +188,6 @@ def get_drinker_spending_per_bar_per_day(FirstName, LastName):
         if FirstName is None and LastName is None:
             raise ValueError("First name and last name of drinker are not fully specified.")
         return jsonify(database.get_drinker_spend_per_bar_per_day(FirstName, LastName))
-    except ValueError as e:
-        return make_response(str(e), 400)
-    except Exception as e:
-        return make_response(str(e), 500)
-
-@app.route('/api/bars-selling/<beer>', methods=['GET'])
-def find_bars_selling(beer):
-    try:
-        if beer is None:
-            raise ValueError('Beer not specified')
-        return jsonify(database.get_bars_selling(beer))
     except ValueError as e:
         return make_response(str(e), 400)
     except Exception as e:

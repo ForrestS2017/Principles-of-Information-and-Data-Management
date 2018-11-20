@@ -24,7 +24,6 @@ export class BarDetailsComponent implements OnInit {
   ) {
     route.paramMap.subscribe((paramMap) => {
       this.barName = paramMap.get('bar');
-      this.selectedDay = '11/5';
       
       barService.getBar(this.barName).subscribe(
         data => {
@@ -62,29 +61,13 @@ export class BarDetailsComponent implements OnInit {
           this.days = data.map(day => {
             return {
               label: day.Date,
-              value: day.Weekday,
+              value: day.Date,
             };
           });
         }
       );
 
-      this.barService.getTopSoldBeers(this.barName, this.selectedDay).subscribe(
-        data => {
-          console.log(data);
-  
-          const names = [];
-          const amounts = [];
-  
-          data.forEach(bar => {
-            names.push(bar.ItemName);
-            amounts.push(bar.Quantity);
-          });
-          console.log('ablablablablablab');
-          console.log(names);
-          console.log(amounts);
-          this.renderChart2(names, amounts);
-        }
-      );
+      
 
     });
   }
@@ -94,7 +77,23 @@ export class BarDetailsComponent implements OnInit {
 
   filterBars(day: string) {
     if(day) {
-      this.selectedDay = day
+      console.log(day);
+      this.selectedDay = day;
+
+      this.barService.getTopSoldBeers(this.barName, this.selectedDay).subscribe(
+        data => {
+  
+          const names = [];
+          const amounts = [];
+  
+          data.forEach(bar => {
+            names.push(bar.ItemName);
+            amounts.push(bar.Quantity);
+          });
+          this.renderChart2(names, amounts);
+        }
+      );
+
     }
   }
 
@@ -138,7 +137,7 @@ export class BarDetailsComponent implements OnInit {
         data: amounts
       }]
     });
-  }
+  };
 
   renderChart2(bnames: string[], bamounts: number[]) {
     Highcharts.chart('bargraph2', {

@@ -1,7 +1,7 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-4">Drinkers</h1>
-    <p class="lead">This page can be used to look up information about drinkers' transactions</p>
+    <p class="lead">This page can be used to look up information about drinkers' transactions. Select a Drinker from the dropdown. Don't worry as the data may take a minute!</p>
     <p-dropdown *ngIf="names" [ngClass]="{ 'no-option-selected': selectedDrinker === undefined || selectedDrinker === null }"
       placeholder="Select a Drinker" [options]="names" [(ngModel)]="selectedDrinker" showClear="true"
       (onChange)="onOptionSelected($event.value)"></p-dropdown>
@@ -13,7 +13,14 @@
   <br><br>
   <ng-container>
       <span *ngIf="drinkerName === undefined || drinkerName === null || drinkerName.length == 0"></span>
-      <span *ngIf="drinkerName !== undefined && drinkerName !== null && drinkerName.length > 0">
+      <span *ngIf="drinkerName !== undefined && drinkerName !== null && drinkerName.length > 0">          
+          <div id="ordersChart" style="height: 400px; width: 100%;"></div>
+          
+          <br><br>
+          
+          <div id="spendingChart" style="height: 400px; width: 100%;"></div>
+          
+          <br><br>
           <p-table [value]="transactions" autoLayout=true>
             <ng-template pTemplate="header">
                 <tr><th colspan=8 style="text-align:center"><b>{{drinkerName}}</b>'s Transactions</th></tr>
@@ -40,16 +47,7 @@
                   <td>${{ transaction.TotalString }}</td>
                 </tr>
             </ng-template>
-          </p-table>
-  
-          <br><br>
-          
-          <div id="ordersChart" style="height: 400px; width: 100%;"></div>
-          
-          <br><br>
-          
-          <div id="spendingChart" style="height: 400px; width: 100%;"></div>
-  
+          </p-table>  
       </span>
   </ng-container>
   

@@ -47,7 +47,7 @@ export class BarsService {
   }
 
   getTopSoldBeers(bar: string, day: string) {
-    return this.http.get<any[]>('/api/bar-top-sold-beers/' + bar)
+    return this.http.get<any[]>('/api/bar-top-sold-beers/' + bar + '/day/' + day)
   }
   
   getDates() {
