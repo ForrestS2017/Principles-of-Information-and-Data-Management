@@ -82,7 +82,6 @@ def get_bar_frequent_counts():
             ')
         rs = con.execute(query)
         results = [dict(row) for row in rs]
-        for key in results: print key
         return results
 
 
