@@ -1,7 +1,7 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-4">Manufacturers</h1>
-    <p class="lead">This page can be used to look up manufacturer statistics.</p>
+    <p class="lead">This page can be used to look up manufacturer statistics. Select a manufacturer in the dropdown to show data! (Some may take a few minutes)</p>
     <p-dropdown *ngIf="Mnames" [ngClass]="{ 'no-option-selected': selectedManf === undefined || selectedManf === null }"
       placeholder="Select a Manufacturer" [options]="Mnames" [(ngModel)]="selectedManf" showClear="true"
       (onChange)="onOptionSelectedM($event.value)"></p-dropdown>
