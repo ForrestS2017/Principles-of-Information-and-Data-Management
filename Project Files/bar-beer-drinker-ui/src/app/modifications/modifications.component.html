@@ -6,14 +6,86 @@
 </div>
 
 <div class="container">
+  <h3>
+    <em>Database Schema</em>
+  </h3>
+  <p class="lead">
+    Name (Columns)
+  </p>
+  <p>
+    • Bars (BarName, License, State, City, Address, Phone, OpenTime, CloseTime)<br />
+    • Bartender (EmployeeID, FirstName, LastName)<br />
+    • Beers (Name, Manf)<br />
+    • Bill (BillID, BarName, Date, Time, ItemName, Price, Quantity, TipTotal)<br />
+    • Drinker (FirstName, LastName, State, City, Phone, Address)<br />
+    • Frequents (FirstName, LastName, BarName)<br />
+    • Inventory (BarName, Beername, Amount)<br />
+    • Item (Barname, ItemName, Price)<br />
+    • Likes (FirstName, LastName, Beer)<br />
+    • Pays (BillID, FirstName, LastName)<br />
+    • Schedules (BarName, EmployeeID)<br />
+    • Sells (BarName, BeerName, Price)<br />
+    • Shifts (EmployeeID, StartTime, EndTime, WeekDay)<br />
+    • Stores (BarName, ItemName, Quantity)<br />
+  </p>
+</div>
+
+<br>
+
+<div class="container">
+  <h3 align="center">UPDATE</h3>
   <form>
     <div class="form-group">
-      <label for="exampleFormControlTextarea1">Enter an Update, Deletion, or Insertion:</label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="e.g. UPDATE table_name
-       SET column1 = value1, column2 = value2, ...
-       WHERE condition; "></textarea>
+      <label for="tableName">Table</label>
+      <input type="text" class="form-control" id="tableName" aria-describedby="reference" placeholder="table_name">
+      <small id="reference" class="form-text text-muted">Please refer to the schema above.</small>
     </div>
+    <div class="form-group">
+      <label for="valueList">Column Values</label>
+      <input type="text" class="form-control" id="valueList" placeholder="column1 = value1, column2 = value2, ...">
+    </div>
+    <div class="form-group">
+      <label for="whereClause">Condition</label>
+      <input type="text" class="form-control" id="whereClause" placeholder="column0 = value0 and ...">
+    </div>
+    <button type="submit" class="btn btn-primary" id="updateButton">Submit</button>
   </form>
+</div>
+
+<br>
+
+<div class="container">
+  <h3 align="center">DELETE</h3>
+   <form>
+     <div class="form-group">
+       <label for="tableName1">Table</label>
+       <input type="text" class="form-control" id="tableName1" aria-describedby="reference" placeholder="table_name">
+       <small id="reference" class="form-text text-muted">Please refer to the schema above.</small>
+     </div>
+     <div class="form-group">
+       <label for="whereClause1">Condition</label>
+       <input type="text" class="form-control" id="whereClause1" placeholder="column0 = value0 and ...">
+     </div>
+     <button type="submit" class="btn btn-primary" id="deleteButton">Submit</button>
+   </form>
+</div>
+
+<br>
+
+<div class="container">
+  <h3 align="center">INSERT</h3>
+   <form>
+     <div class="form-group">
+       <label for="tableName2">Table and/or Columns</label>
+       <input type="text" class="form-control" id="tableName2" aria-describedby="reference" placeholder="table_name (column1, column2, column3, ...)">
+       <small id="reference" class="form-text text-muted">Please refer to the schema above.</small>
+     </div>
+     <div class="form-group">
+       <label for="valueList1">Values</label>
+       <input type="text" class="form-control" id="valueList1" placeholder="(value1, value2, value3, ...);">
+     </div>
+    <button type="submit" class="btn btn-primary" id="insertButton">Submit</button>
+   </form>
 </div>
 
 <br><br>
