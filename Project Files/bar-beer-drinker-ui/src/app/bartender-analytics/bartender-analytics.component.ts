@@ -46,7 +46,6 @@ export class BartenderAnalyticsComponent implements OnInit {
         { value: 'Friday', label: 'Friday' },
         { value: 'Saturday', label: 'Saturday' }
     ];
-    this.done = 1;
     this.getBars();
   }
 
@@ -54,17 +53,19 @@ export class BartenderAnalyticsComponent implements OnInit {
   }
 
   getBars() {
+    this.done = 1;
     this.barService.getBars().subscribe(
       data => {
         this.bars = data;
         var count:number = 0;
         this.barSelect = data.map(bar => { return { value: count++, label: bar.BarName }; })
             .sort((a, b) => a.label.localeCompare(b.label));
+        this.done = 0;
       },
       error => {
         alert('Could not retrieve a list of bars');
+        this.done = 0;
       }
-      this.done = 0;
     );
   }
   
@@ -84,10 +85,11 @@ export class BartenderAnalyticsComponent implements OnInit {
             var count:number = 0;
             this.shiftSelect = data.map(shift => { return { value: count++, label: shift.StartTime + '-' + shift.EndTime }; })
                 .sort((a, b) => a.label.localeCompare(b.label));
+            this.done = 0;
         }, error => {
             alert('Could not retrieve a list of shifts');
+            this.done = 0;
         }
-        this.done = 0;
       );
   }
   
@@ -123,10 +125,11 @@ export class BartenderAnalyticsComponent implements OnInit {
                     BeersSold: sale.BeersSold !== null ? sale.BeersSold : -1
                 }; 
             });
+            this.done = 0;
         }, error => {
             alert('Could not retrieve a ranking of bartenders');
+            this.done = 0;
         }
-        this.done = 0;
       );
   }
   

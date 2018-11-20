@@ -25,7 +25,6 @@ export class ManufacturersComponent implements OnInit {
     public manfService: ManufacturersService, 
     private ref: ElementRef
     ) {
-    this.done = 1;
     this.getManfs();
   }
 
@@ -43,6 +42,7 @@ export class ManufacturersComponent implements OnInit {
   }
 
   getManfs(){
+    this.done = 1;
     this.manfService.getManfs().subscribe(
       data => {
         this.manfsList = data;

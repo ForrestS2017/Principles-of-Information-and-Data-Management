@@ -52,18 +52,19 @@ export class BartendersComponent implements OnInit {
         var count:number = 0;
         this.barSelect = data.map(bar => { return { value: count++, label: bar.BarName }; })
             .sort((a, b) => a.label.localeCompare(b.label));
+        this.done = 0;
       },
       error => {
         alert('Could not retrieve a list of bars');
+        this.done = 0;
       }
-      this.done = 0;
     );
   }
   
   getBartenders(barValue) {
+      this.bartenderName = null;
       if (barValue == null) {
           this.barName = null;
-          this.bartenderName = null;
           return;
       }
       this.done = 1;
@@ -75,10 +76,11 @@ export class BartendersComponent implements OnInit {
             var count:number = 0;
             this.bartenderSelect = data.map(bartender => { return { value: count++, label: bartender.FirstName + ' ' + bartender.LastName }; })
                 .sort((a, b) => a.label.localeCompare(b.label));
+            this.done = 0;
         }, error => {
             alert('Could not retrieve a list of bartenders');
+            this.done = 0;
         }
-        this.done = 0;
       );
   }
   
@@ -93,10 +95,11 @@ export class BartendersComponent implements OnInit {
       this.http.get<Shift[]>('/api/bartenders/' + bartender.FirstName + '_' + bartender.LastName + '/shifts').subscribe(
         data => {
             this.shifts = data;
+            this.done--;
         }, error => {
             alert('Could not retrieve a list of bartender shifts');
+            this.done--;
         }
-        this.done--;
       );
       // Corbin Shaffer
       this.http.get<Sale[]>('/api/bartenders/' + bartender.FirstName + '_' + bartender.LastName + '/sales').subscribe(
@@ -106,10 +109,11 @@ export class BartendersComponent implements OnInit {
             } else {
                 this.sales = data;
             }
+            this.done--;
         }, error => {
             alert('Could not retrieve a list of bartender shifts');
+            this.done--;
         }
-        this.done--;
       );
   }
   

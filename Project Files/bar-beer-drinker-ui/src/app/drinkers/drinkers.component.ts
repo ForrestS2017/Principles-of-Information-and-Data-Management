@@ -51,11 +51,12 @@ export class DrinkersComponent implements OnInit {
         var count:number = 0;
         this.names = data.map(drinker => { return { value: count++, label: drinker.FirstName + ' ' + drinker.LastName }; })
             .sort((a, b) => a.label.localeCompare(b.label));
+        this.done = 0;
       },
       error => {
         alert('Could not retrieve a list of drinkers');
+        this.done = 0;
       }
-      this.done = 0;
     );
   }
   

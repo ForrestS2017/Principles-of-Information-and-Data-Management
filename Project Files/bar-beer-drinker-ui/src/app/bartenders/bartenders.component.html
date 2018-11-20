@@ -29,8 +29,8 @@
 
   <br><br>
   <ng-container>
-      <span *ngIf="bartenderName === undefined || bartenderName === null || bartenderName.length == 0"></span>
-      <span *ngIf="bartenderName !== undefined && bartenderName !== null && bartenderName.length > 0">
+      <span *ngIf="bartenderName === undefined || bartenderName === null || bartenderName.length == 0 || done > 0"></span>
+      <span *ngIf="bartenderName !== undefined && bartenderName !== null && bartenderName.length > 0 && done === 0">
           <p-table [value]="shifts" autoLayout=true>
             <ng-template pTemplate="header">
                 <tr><th colspan=3 style="text-align:center"><b>{{bartenderName}}</b>'s Shifts</th></tr>
