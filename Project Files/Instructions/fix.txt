@@ -1,0 +1,17 @@
+--update er diagram with day and add employeeid to bill
+
+Bar Page - Top 10 Largest Spenders - each drinker amount is only from one tranaction
+Bar Page - Top 10 Beers Sold on This Day - double check query
+(Bar Analytics not done)
+
+Beer Page - Top 20 People Drinking... - beers are added up by first names and not full drinker name
+Beer Page - (MUST DO) - "time distribution of when this beer sells the mo
+
+BARTENDER STUFF
+- Add bartender to bill so we know who sold the beer
+- Make sure that all staffed bartenders are listed in Shifts table
+- Try to get more than one bartender working at a time for bartender analytics
+
+Manufacturer Page - Highest Sales Regions - check query, it is not grouping correctly for summation of sales
+
+Modify Page - (MUST DO?)...
