@@ -82,6 +82,7 @@ def get_bar_frequent_counts():
             ')
         rs = con.execute(query)
         results = [dict(row) for row in rs]
+        for key in results: print key
         return results
 
 
@@ -117,6 +118,14 @@ def get_bar_top_sold_beers(bar_name, day):
         if rs.rowcount is 0:
             return None
         results = [dict(row) for row in rs]
+        """
+        The column for Quantity was registered as a "DECIMAL" type which could not be JSON-ified
+        The solution was to take each element of the list (a dictionary), target the second entry
+            of that dictionary, and reset it to an int rather than a DECIMAL
+        """
+        for thisdict in results:
+            target = thisdict.items()[1][0]
+            thisdict[target] = int(thisdict[target])
         return results
 
 def get_days():
