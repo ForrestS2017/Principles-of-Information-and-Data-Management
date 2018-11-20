@@ -122,8 +122,9 @@ def get_bar_top_sold_beers(bar_name, day):
         The solution was to take each element of the list (a dictionary), target the second entry
             of that dictionary, and reset it to an int rather than a DECIMAL
         """
-        for thisdict in results:
-            target = thisdict.items()[1][0]
+        for thisdict in results:            
+            target = list(thisdict.keys())
+            target = target[1]
             thisdict[target] = int(thisdict[target])
         return results
 
