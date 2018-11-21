@@ -334,6 +334,26 @@ def get_rankings_for_shift(bar_name, day, start_time):
         return [dict(row) for row in rs]
 
 """
+BAR ANALYTICS PAGE
+"""
+
+def get_bar_analytics(beer_name, day):
+    with engine.connect() as con:
+        query = sql.text('SELECT BarName, sum(Quantity) AS Quantity \
+                        FROM Bills b2 \
+                        WHERE b2.ItemName = :beer_name AND b2.Date = :day \
+                        GROUP BY b2.BarName \
+                        ORDER BY sum(b2.Quantity) DESC LIMIT 10')
+        rs = con.execute(query, beer_name=beer_name, day=day)
+    results = [dict(row) for row in rs]
+    for thisdict in results:            
+            target = list(thisdict.keys())
+            target = target[1]
+            thisdict[target] = int(thisdict[target])
+    return results
+
+
+"""
 MANF PAGE
 """
 

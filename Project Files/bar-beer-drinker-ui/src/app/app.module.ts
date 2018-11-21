@@ -21,6 +21,7 @@ import { DrinkerDetailsComponent } from './drinker-details/drinker-details.compo
 import { BarsComponent } from './bars/bars.component';
 import { VerificationComponent } from './verification/verification.component';
 import { BartenderAnalyticsComponent } from './bartender-analytics/bartender-analytics.component';
+import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { BartenderAnalyticsComponent } from './bartender-analytics/bartender-ana
     DrinkerDetailsComponent,
     BarsComponent,
     VerificationComponent,
-    BartenderAnalyticsComponent
+    BartenderAnalyticsComponent,
+    BarAnalyticsComponent
   ],
   imports: [
     BrowserModule,
