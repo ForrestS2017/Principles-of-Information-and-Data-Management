@@ -130,6 +130,18 @@ def find_bars_selling(beer):
     except Exception as e:
         return make_response(str(e), 500)
 
+@app.route('/api/fraction-sold/<bar_name>/<path:date>', method=['GET'])
+def get_fraction_sold(bar_name, date):
+    try:
+        if bar_name is None:
+            raise ValueError('Unspecified Bar')
+        if date is None:
+            raise ValueError('Unspecified Date')
+        return jsonify(database.get_fraction_sold(bar_name, date))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
 
 @app.route("/api/likes", methods=["GET"])
 def get_likes():

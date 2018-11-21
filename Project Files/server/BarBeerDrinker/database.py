@@ -384,6 +384,15 @@ def get_liked_manfs(manf_name):
             return None
         return [dict(row) for row in rs]
 
+def get_fraction_sold(bar_name, date):
+    with engine.connect() as con:
+        query = sql.text("SELECT (sum(b.Quantity) / ii.Amount) AS Fraction \
+                        FROM Bills b, (SELECT sum(i.Amount) AS Amount FROM Inventory i WHERE i.BarName = 'Academia') ii \
+                        WHERE b.BarName = :bar_name AND b.ItemName IN (SELECT bee.BeerName FROM Beers bee) AND b.Date = :date")
+        rs = con.execute(query, bar_name=bar_name, date=date)
+        if rs.rowcount is 0:
+            return None
+        return [dict(row) for row in rs]
 
 """
 VERIFY PAGE

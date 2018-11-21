@@ -55,6 +55,10 @@ export class BarsService {
     return this.http.get<BarSale[]>('/api/bar_analytics/' + beer + '/' + day)
   }
   
+  get_fraction_sold(bar: string, day: string) {
+    return this.http.get<any[]>('/api/fraction-sold/' + bar + '/' + day)
+  }
+  
   getDates() {
     return this.http.get<any[]>('/api/days')
   }
