@@ -285,6 +285,20 @@ def get_liked_manfs(manf_name):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+
+@app.route('/api/bar_analytics/<beer_name>/<path:day>', methods=['GET'])
+def get_bar_analytics(beer_name, day):
+    try:
+        if beer_name is None:
+            raise ValueError('Beer does not exist.')
+        #if day is None:
+        #    raise ValueError('Day not specified')
+        return jsonify(database.get_bar_analytics(beer_name, day))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+
         
 @app.route('/api/patterns/1', methods=['GET'])
 def verify_pattern_1():

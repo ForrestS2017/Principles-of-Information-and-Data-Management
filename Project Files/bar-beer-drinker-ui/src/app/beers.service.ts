@@ -17,6 +17,10 @@ export interface TopDrinker {
   Quantity: number;
 }
 
+export interface Beer {
+  BeerName: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +30,10 @@ export class BeersService {
 
   getBeers() {
     return this.http.get<any[]>('/api/beer');
+  }
+
+  getBeers1() {
+    return this.http.get<Beer[]>('/api/beer');
   }
 
   getBarsSelling(beer: string) {

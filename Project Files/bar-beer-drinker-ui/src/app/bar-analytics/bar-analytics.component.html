@@ -1,0 +1,32 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Analyze your Bars!</h1>
+    <p class="lead">This page can be used to look up manufacturer statistics. Select a manufacturer from the dropdown menu to show data!</p>
+    <p-dropdown *ngIf="Bnames" [ngClass]="{ 'no-option-selected': selectedBeer === undefined || selectedBeer === null }"
+      placeholder="Select a Beer" [options]="Bnames" [(ngModel)]="selectedBeer" showClear="true"
+      (onChange)="onOptionSelectedB($event.value)">
+    </p-dropdown>
+    <br><br>
+    <p-dropdown *ngIf="Dnames" [ngClass]="{ 'no-option-selected': selectedDay === undefined || selectedDay === null }"
+      placeholder="Select a Date" [options]="Dnames" [(ngModel)]="selectedDay" showClear="true"
+      (onChange)="onOptionSelectedD($event.value)">
+    </p-dropdown>
+    <ng-container>
+      <span *ngIf="done === undefined || done === 0"></span>
+      <span *ngIf="done !== undefined && done !== 0">
+        <br><br>
+        Loading. . .<br>
+        Fetching data, please be patient
+      </span>
+    </ng-container>
+  </div>
+</div>
+
+<div class="container">
+  <ng-container>
+      <br><br>
+      <div id="barSalesChart" style="height: 400px; width: 100%;"></div>
+  </ng-container>
+</div>
+
+<br><br>
