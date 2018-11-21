@@ -195,6 +195,26 @@ def get_beer_top_drinkers(beer):
             thisdict[target] = int(thisdict[target])
         return results
 
+def get_beer_time_dist(beer):
+    """Gets a list of beer names from the beers table."""
+    with engine.connect() as con:
+        query = sql.text('SELECT * \
+                        FROM \
+                        (SELECT cast(sum(b1.Quantity) as unsigned) as Interval1 \
+                        FROM Bills b1  \
+                        WHERE b1.ItemName = :beer AND b1.Time >= "00:00" AND b1.Time < "06:00") s1, \
+                        (SELECT cast(sum(b2.Quantity) as unsigned) as Interval2 \
+                        FROM Bills b2 \
+                        WHERE b2.ItemName = :beer AND b2.Time >= "06:00" AND b2.Time < "12:00") s2, \
+                        (SELECT cast(sum(b3.Quantity) as unsigned) as Interval3 \
+                        FROM Bills b3 \
+                        WHERE b3.ItemName = :beer AND b3.Time >= "12:00" AND b3.Time < "18:00") s3, \
+                        (SELECT cast(sum(b4.Quantity) as unsigned) as Interval4 \
+                        FROM Bills b4 \
+                        WHERE b4.ItemName = :beer AND b4.Time >= "18:00" AND b4.Time < "24:00") s4') 
+        rs = con.execute(query, beer=beer)
+        return [dict(row) for row in rs]
+
 """
 DRINKER PAGE
 """
@@ -359,20 +379,14 @@ MANF PAGE
 
 def get_highest_sales(manf_name):
     with engine.connect() as con:
-        query = sql.text("SELECT DISTINCT b.Manf, Cast(sum(bi.TipTotal) AS decimal(18,2)) AS TipTotal, ba.City \
-                        FROM Beers b, Bills bi, Bars ba \
-                        WHERE b.Manf = :manf_name AND  ba.BarName = bi.BarName AND bi.ItemName \
-                        IN (SELECT DISTINCT b1.BeerName from Beers b1 where b1.Manf = :manf_name) \
-                        GROUP BY ba.City\
-                        ORDER BY  bi.TipTotal DESC")
+        query = sql.text("SELECT DISTINCT b.Manf, CAST(SUM(bi.Quantity) AS UNSIGNED) AS TipTotal, ba.City \
+            FROM Beers b, Bills bi, Bars ba \
+            WHERE b.Manf = :manf_name AND  ba.BarName = bi.BarName AND bi.ItemName \
+            IN (SELECT DISTINCT BeerName from Beers b1) \
+            GROUP BY ba.City \
+            ORDER BY TipTotal DESC")
         rs = con.execute(query, manf_name=manf_name)
         results = [dict(row) for row in rs]
-        for thisdict in results:            
-            target = list(thisdict.keys())
-            target = target[2]
-            thisdict[target] = int(thisdict[target])
-        for row in results:
-            print(row)
         return results
 
 

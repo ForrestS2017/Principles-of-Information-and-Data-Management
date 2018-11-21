@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BeersService, BeerLocation, TopBar, TopDrinker } from '../beers.service';
+import { BeersService, BeerLocation, TopBar, TopDrinker, TimeDist } from '../beers.service';
 import { ActivatedRoute } from '@angular/router';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import * as CanvasJS from '../canvasjs.min'
@@ -26,6 +26,8 @@ export class BeerDetailsComponent implements OnInit {
 
   topBars: TopBar[];
   topDrinkers: TopDrinker[];
+
+  timeDist: TimeDist;
 
   constructor(
     private beerService: BeersService,
@@ -58,8 +60,15 @@ export class BeerDetailsComponent implements OnInit {
         }
       );
 
+      this.beerService.getBeerTimeDist(this.beerName).subscribe(
+        data => {
+          this.timeDist = data;
+        }
+      )
+
       this.getBeerTopBarsChart(this.beerName);
       this.getBeerTopDrinkersChart(this.beerName);
+      this.getTimeDistChart(this.beerName);
 
       this.filterOptions = [
         /*{
@@ -103,6 +112,30 @@ export class BeerDetailsComponent implements OnInit {
         return b.customers - a.customers;
       });
     }
+  }
+
+  getTimeDistChart(beerName){
+    this.beerService.getBeerTimeDist(beerName).subscribe(data => {
+      var dps:DataPoint[] = [];
+      let timeDistChart = new CanvasJS.Chart('timeDistChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: beerName + ' - Time Distribution of Sales'
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      var inters:TimeDist = data[0];
+      dps.push({ y: inters.Interval1, label: '12AM - 6AM' })
+      dps.push({ y: inters.Interval2, label: '6AM - 12PM' })
+      dps.push({ y: inters.Interval3, label: '12PM - 6PM' })
+      dps.push({ y: inters.Interval4, label: '6PM - 12AM' })
+     
+      timeDistChart.render();
+    });
   }
 
   getBeerTopBarsChart(beerName){
