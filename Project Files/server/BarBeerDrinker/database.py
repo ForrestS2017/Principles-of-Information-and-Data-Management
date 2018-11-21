@@ -3,6 +3,8 @@ from sqlalchemy import sql
 
 from BarBeerDrinker import config
 
+import re
+
 engine = create_engine(config.database_uri)
 
 """
@@ -463,3 +465,137 @@ def verify_pattern_5():
         if result is None:
             return None
         return [dict(result)]
+        
+def insert_row(table, values):
+    with engine.connect() as con:
+        ltable = table.lower()
+        if ltable == "bars":
+            table = "Bars (BarName, License, State, City, Address, Phone, OpenTime, CloseTime)"
+        elif ltable == "bartenders":
+            table = "Bartenders (EmployeeID, FirstName, LastName)"
+        elif ltable == "beers":
+            table = "Beers (Name, Manf)"
+        elif ltable == "bills":
+            table = "Bills (BillID, BarName, Date, Time, ItemName, Price, Quantity, TipTotal)"
+        elif ltable == "dates":
+            table = "Dates (Day, Weekday)"
+        elif ltable == "drinkers":
+            table = "Drinkers (FirstName, LastName, State, City, Phone, Address)"
+        elif ltable == "frequents":
+            table = "Frequents (FirstName, LastName, BarName)"
+        elif ltable == "inventory":
+            table = "Inventory (BarName, Beername, Amount)"
+        elif ltable == "items":
+            table = "Items (Barname, ItemName, Price)"
+        elif ltable == "likes":
+            table = "Likes (FirstName, LastName, Beer)"
+        elif ltable == "pays":
+            table = "Pays (BillID, FirstName, LastName)"
+        elif ltable == "schedules":
+            table = "Schedules (BarName, EmployeeID)"
+        elif ltable == "sells":
+            table = "Sells (BarName, BeerName, Price)"
+        elif ltable == "shifts":
+            table = "Shifts (EmployeeID, StartTime, EndTime, WeekDay)"
+        elif ltable == "sold":
+            table = "Sold (EmployeeID, BillID)"
+        elif ltable == "stores":
+            table = "Stores (BarName, ItemName, Quantity)"
+        values = re.sub(r", ", ",", values)
+        values = re.sub(r" ,", ",", values)
+        values = re.sub(r"(.+?),", "'\g<1>',", values)
+        values = re.sub(r",([^,]+?)$", ",'\g<1>'", values)
+        query = sql.text('INSERT INTO ' + table + ' VALUES (' + values + ')' + ';')
+        try:
+            rs = con.execute(query)
+            if rs.lastrowid == 0:
+                return "Success"
+        except Exception as e:
+            return e[0]
+            
+def delete_rows(table, condition):
+    with engine.connect() as con:
+        ltable = table.lower()
+        if ltable == "bars":
+            table = "Bars"
+        elif ltable == "bartenders":
+            table = "Bartenders"
+        elif ltable == "beers":
+            table = "Beers"
+        elif ltable == "bills":
+            table = "Bills"
+        elif ltable == "dates":
+            table = "Dates"
+        elif ltable == "drinkers":
+            table = "Drinkers"
+        elif ltable == "frequents":
+            table = "Frequents"
+        elif ltable == "inventory":
+            table = "Inventory"
+        elif ltable == "items":
+            table = "Items"
+        elif ltable == "likes":
+            table = "Likes"
+        elif ltable == "pays":
+            table = "Pays"
+        elif ltable == "schedules":
+            table = "Schedules"
+        elif ltable == "sells":
+            table = "Sells"
+        elif ltable == "shifts":
+            table = "Shifts"
+        elif ltable == "sold":
+            table = "Sold "
+        elif ltable == "stores":
+            table = "Stores"
+        query = sql.text('DELETE FROM ' + table + ' WHERE ' + condition + ';')
+        try:
+            rs = con.execute(query)
+            if rs.lastrowid == 0:
+                return "Success"
+        except Exception as e:
+            return e[0]
+
+def update_rows(table, set, where):
+    with engine.connect() as con:
+        ltable = table.lower()
+        if ltable == "bars":
+            table = "Bars"
+        elif ltable == "bartenders":
+            table = "Bartenders"
+        elif ltable == "beers":
+            table = "Beers"
+        elif ltable == "bills":
+            table = "Bills"
+        elif ltable == "dates":
+            table = "Dates"
+        elif ltable == "drinkers":
+            table = "Drinkers"
+        elif ltable == "frequents":
+            table = "Frequents"
+        elif ltable == "inventory":
+            table = "Inventory"
+        elif ltable == "items":
+            table = "Items"
+        elif ltable == "likes":
+            table = "Likes"
+        elif ltable == "pays":
+            table = "Pays"
+        elif ltable == "schedules":
+            table = "Schedules"
+        elif ltable == "sells":
+            table = "Sells"
+        elif ltable == "shifts":
+            table = "Shifts"
+        elif ltable == "sold":
+            table = "Sold "
+        elif ltable == "stores":
+            table = "Stores"
+        query = sql.text('UPDATE ' + table + ' SET ' + set + ' WHERE ' + where + ';')
+        try:
+            rs = con.execute(query)
+            if rs.lastrowid == 0:
+                return "Success"
+        except Exception as e:
+            return e[0]
+
