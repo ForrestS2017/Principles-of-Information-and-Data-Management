@@ -289,12 +289,12 @@ def get_bartender_shifts(first_name, last_name):
 def get_bartender_sales(first_name, last_name):
     with engine.connect() as con:
         query = sql.text('SELECT b.ItemName, CAST(SUM(b.Quantity) AS UNSIGNED) as TotalSold \
-            FROM Bartenders t, Shifts s, Schedules c, Bills b \
+            FROM Bartenders t, Shifts s, Schedules c, Bills b, Sold o \
             WHERE t.FirstName = :first_name AND t.LastName = :last_name \
                 AND t.EmployeeID = s.EmployeeID AND s.EmployeeID = c.EmployeeID AND c.BarName = b.BarName \
                 AND b.ItemName IN (SELECT BeerName FROM Beers) \
                 AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
-                AND t.EmployeeID = b.EmployeeID \
+                AND t.EmployeeID = o.EmployeeID AND b.BillID = o.BillID \
             GROUP BY b.ItemName')
         rs = con.execute(query, first_name=first_name, last_name=last_name)
         if rs.rowcount is 0:
@@ -320,14 +320,15 @@ def get_shifts_for_bar(bar_name):
 def get_rankings_for_shift(bar_name, day, start_time):
     with engine.connect() as con:
         query = sql.text('SELECT t.FirstName, t.LastName, CAST(SUM(b.Quantity) AS UNSIGNED) as BeersSold \
-            FROM Bartenders t, Shifts s, Schedules c, Bills b, Dates d \
+            FROM Bartenders t, Shifts s, Schedules c, Bills b, Dates d, Sold o \
             WHERE t.EmployeeID = s.EmployeeID AND s.EmployeeID = c.EmployeeID \
                 AND c.BarName = :bar AND c.BarName = b.BarName \
                 AND b.ItemName IN (SELECT BeerName FROM Beers) \
                 AND s.StartTime = :startTime \
                 AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
                 AND d.Date = b.Date AND d.Weekday = :day \
-                GROUP BY b.EmployeeID')
+                AND t.EmployeeID = o.EmployeeID AND b.BillID = o.BillID \
+            GROUP BY t.EmployeeID')
         rs = con.execute(query, bar=bar_name, day=day, startTime=start_time)
         return [dict(row) for row in rs]
 
