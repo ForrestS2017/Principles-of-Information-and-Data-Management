@@ -294,11 +294,7 @@ def get_bartender_sales(first_name, last_name):
                 AND t.EmployeeID = s.EmployeeID AND s.EmployeeID = c.EmployeeID AND c.BarName = b.BarName \
                 AND b.ItemName IN (SELECT BeerName FROM Beers) \
                 AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
-                AND ( \
-                    (s.WeekDay = \'Mon-Fri\' AND b.Date < \'11/6\') \
-                    OR \
-                    (s.WeekDay = \'Sat-Sun\' AND b.Date >= \'11/6\') \
-                ) \
+                AND t.EmployeeID = b.EmployeeID \
             GROUP BY b.ItemName')
         rs = con.execute(query, first_name=first_name, last_name=last_name)
         if rs.rowcount is 0:
@@ -322,7 +318,6 @@ def get_shifts_for_bar(bar_name):
         return [dict(row) for row in rs]
         
 def get_rankings_for_shift(bar_name, day, start_time):
-    # THIS DON'T WORK
     with engine.connect() as con:
         query = sql.text('SELECT t.FirstName, t.LastName, CAST(SUM(b.Quantity) AS UNSIGNED) as BeersSold \
             FROM Bartenders t, Shifts s, Schedules c, Bills b, Dates d \
@@ -331,7 +326,8 @@ def get_rankings_for_shift(bar_name, day, start_time):
                 AND b.ItemName IN (SELECT BeerName FROM Beers) \
                 AND s.StartTime = :startTime \
                 AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
-                AND d.Date = b.Date AND d.Weekday = :day')
+                AND d.Date = b.Date AND d.Weekday = :day \
+                GROUP BY b.EmployeeID')
         rs = con.execute(query, bar=bar_name, day=day, startTime=start_time)
         return [dict(row) for row in rs]
 
