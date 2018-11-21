@@ -15,3 +15,10 @@ BARTENDER STUFF
 Manufacturer Page - Highest Sales Regions - check query, it is not grouping correctly for summation of sales
 
 Modify Page - (MUST DO?)...
+
+
+SELECT DISTINCT b.Manf, bi.TipTotal, ba.City 
+FROM Beers b, Bills bi, Bars ba 
+WHERE b.Manf = :manf_name and ba.BarName = bi.BarName and bi.ItemName 
+IN (SELECT DISTCINT b1.BeerName from Beers b1 where b1.Manf = :manf_name) 
+ORDER BY  bi.TipTotal desc
