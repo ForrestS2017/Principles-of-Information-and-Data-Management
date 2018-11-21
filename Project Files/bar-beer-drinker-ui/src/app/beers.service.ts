@@ -21,6 +21,13 @@ export interface Beer {
   BeerName: string;
 }
 
+export interface TimeDist {
+  Interval1: number;
+  Interval2: number;
+  Interval3: number;
+  Interval4: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -53,6 +60,10 @@ export class BeersService {
 
   getBeerTopDrinkers(beer: string) {
     return this.http.get<TopDrinker[]>('/api/beer-top-drinkers/' + beer);
+  }
+
+  getBeerTimeDist(beer: string) {
+    return this.http.get<TimeDist>('api/beer-time-dist/' + beer);
   }
 
 }

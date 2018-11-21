@@ -118,6 +118,12 @@ def get_beer_top_drinkers(beer):
     except Exception as e:
         return make_response(str(e), 500)
 
+@app.route("/api/beer-time-dist/<beer>", methods=["GET"])
+def get_beer_time_dist(beer):
+    try:
+        return jsonify(database.get_beer_time_dist(beer))
+    except Exception as e:
+        return make_response(str(e), 500)
 
 @app.route('/api/bars-selling/<beer>', methods=['GET'])
 def find_bars_selling(beer):
