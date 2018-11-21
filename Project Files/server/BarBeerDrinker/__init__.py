@@ -334,6 +334,27 @@ def verify_pattern_5():
         return jsonify(database.verify_pattern_5())
     except Exception as e:
         return make_response(str(e), 500)
+        
+@app.route('/api/insert/<table>/<values>', methods=['GET'])
+def insert_row(table, values):
+    try:
+        return jsonify(database.insert_row(table, values))
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route('/api/delete/<table>/<condition>', methods=['GET'])
+def delete_rows(table, condition):
+    try:
+        return jsonify(database.delete_rows(table, condition))
+    except Exception as e:
+        return make_response(str(e), 500)
+        
+@app.route('/api/update/<table>/<set>/<where>', methods=['GET'])
+def update_rows(table, set, where):
+    try:
+        return jsonify(database.update_rows(table, set, where))
+    except Exception as e:
+        return make_response(str(e), 500)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path>', methods=["GET"])
