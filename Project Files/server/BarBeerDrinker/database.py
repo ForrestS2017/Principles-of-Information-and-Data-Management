@@ -359,20 +359,14 @@ MANF PAGE
 
 def get_highest_sales(manf_name):
     with engine.connect() as con:
-        query = sql.text("SELECT DISTINCT b.Manf, Cast(sum(bi.TipTotal) AS decimal(18,2)) AS TipTotal, ba.City \
-                        FROM Beers b, Bills bi, Bars ba \
-                        WHERE b.Manf = :manf_name AND  ba.BarName = bi.BarName AND bi.ItemName \
-                        IN (SELECT DISTINCT b1.BeerName from Beers b1 where b1.Manf = :manf_name) \
-                        GROUP BY ba.City\
-                        ORDER BY  bi.TipTotal DESC")
+        query = sql.text("SELECT DISTINCT b.Manf, CAST(SUM(bi.Quantity) AS UNSIGNED) AS TipTotal, ba.City \
+            FROM Beers b, Bills bi, Bars ba \
+            WHERE b.Manf = :manf_name AND  ba.BarName = bi.BarName AND bi.ItemName \
+            IN (SELECT DISTINCT BeerName from Beers b1) \
+            GROUP BY ba.City \
+            ORDER BY TipTotal DESC")
         rs = con.execute(query, manf_name=manf_name)
         results = [dict(row) for row in rs]
-        for thisdict in results:            
-            target = list(thisdict.keys())
-            target = target[2]
-            thisdict[target] = int(thisdict[target])
-        for row in results:
-            print(row)
         return results
 
 
