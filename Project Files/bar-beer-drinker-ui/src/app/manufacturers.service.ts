@@ -16,6 +16,11 @@ export interface LikedCity {
   Count: number;
 }
 
+export interface LikedState {
+  State: string;
+  Count: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,6 +38,10 @@ export class ManufacturersService {
 
   getLikedCities(Manf: string) {
     return this.http.get<LikedCity[]>('/api/manufacturer/' + Manf + '/liked')
+  }
+  
+  getLikedStates(Manf: string) {
+    return this.http.get<LikedState[]>('/api/manufacturer/' + Manf + '/liked_states')
   }
   
 }

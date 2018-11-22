@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { ManufacturersService, Manufacturer, PopularCity, LikedCity } from '../manufacturers.service';
+import { ManufacturersService, Manufacturer, PopularCity, LikedCity, LikedState } from '../manufacturers.service';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import * as CanvasJS from '../canvasjs.min'
 
@@ -35,10 +35,11 @@ export class ManufacturersComponent implements OnInit {
     if (event == null) {
         return;
     }
-    this.done = 2;
+    this.done = 3;
     var manfName:Manufacturer = this.manfsList[event];
     this.getHighestSalesChart(event);
     this.getLikedCitiesChart(event);
+    this.getLikedStatesChart(event);
   }
 
   getManfs(){
@@ -95,6 +96,29 @@ export class ManufacturersComponent implements OnInit {
       for(var i:number = 0; i < data.length; i++){
         var sale:LikedCity = data[i];
         dps.push({ y: sale.Count, label: sale.City });
+      }
+      popularChart.render();
+      this.done--;
+    });
+  }
+  
+  getLikedStatesChart(manfName){
+    this.manfService.getLikedStates(manfName).subscribe(data => {
+      var dps:DataPoint[] = [];
+      let popularChart = new CanvasJS.Chart('statesChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: manfName + ' -  Most Popular in These States'
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      for(var i:number = 0; i < data.length; i++){
+        var sale:LikedState = data[i];
+        dps.push({ y: sale.Count, label: sale.State });
       }
       popularChart.render();
       this.done--;

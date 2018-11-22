@@ -441,7 +441,15 @@ def get_highest_sales(manf_name):
 
 def get_liked_manfs(manf_name):
     with engine.connect() as con:
-        query = sql.text("select d.City, count(distinct d.FirstName) as Count from Drinkers d, Likes l where d.FirstName = l.FirstName and d.LastName = l.LastName and l.beer in (select bb.BeerName from Beers bb where bb.Manf = :manf_name) group by d.City order by count(d.FirstName) desc")
+        query = sql.text("select d.City, count(distinct d.FirstName) as Count from Drinkers d, Likes l where d.FirstName = l.FirstName and d.LastName = l.LastName and l.beer in (select bb.BeerName from Beers bb where bb.Manf = :manf_name) group by d.City order by Count desc")
+        rs = con.execute(query, manf_name=manf_name)
+        if rs.rowcount is 0:
+            return None
+        return [dict(row) for row in rs]
+        
+def get_liked_manfs_state(manf_name):
+    with engine.connect() as con:
+        query = sql.text("select d.State, count(distinct d.FirstName) as Count from Drinkers d, Likes l where d.FirstName = l.FirstName and d.LastName = l.LastName and l.beer in (select bb.BeerName from Beers bb where bb.Manf = :manf_name) group by d.State order by Count desc")
         rs = con.execute(query, manf_name=manf_name)
         if rs.rowcount is 0:
             return None

@@ -317,6 +317,17 @@ def get_liked_manfs(manf_name):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+        
+@app.route('/api/manufacturer/<manf_name>/liked_states', methods=['GET'])
+def get_liked_manfs_state(manf_name):
+    try:
+        if manf_name is None:
+            raise ValueError('Manufacturer does not exist.')
+        return jsonify(database.get_liked_manfs_state(manf_name))
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
 
 @app.route('/api/bar_analytics/<beer_name>/<path:day>', methods=['GET'])
 def get_bar_analytics(beer_name, day):
