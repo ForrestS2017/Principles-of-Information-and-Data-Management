@@ -136,7 +136,7 @@ def find_bars_selling(beer):
     except Exception as e:
         return make_response(str(e), 500)
 
-@app.route('/api/fraction-sold/<bar_name>/<path:date>', method=['GET'])
+@app.route('/api/fraction-sold/<bar_name>/<path:date>', methods=['GET'])
 def get_fraction_sold(bar_name, date):
     try:
         if bar_name is None:

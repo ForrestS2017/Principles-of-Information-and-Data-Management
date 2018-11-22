@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BarsService, Bar, BarMenuItem } from '../bars.service';
+import { BarsService, Bar, Fraction, BarMenuItem } from '../bars.service';
 import { HttpResponse } from '@angular/common/http';
 import { SelectItem } from 'primeng/components/common/selectitem';
 
@@ -17,6 +17,7 @@ export class BarDetailsComponent implements OnInit {
   selectedDay: string;
   barDetails: Bar;
   days: SelectItem[];
+  fraction: number;
   
   constructor(
     private barService: BarsService,
@@ -77,7 +78,6 @@ export class BarDetailsComponent implements OnInit {
 
   filterBars(day: string) {
     if(day) {
-      console.log(day);
       this.selectedDay = day;
 
       this.barService.getTopSoldBeers(this.barName, this.selectedDay).subscribe(
@@ -91,6 +91,12 @@ export class BarDetailsComponent implements OnInit {
             amounts.push(bar.Quantity);
           });
           this.renderChart2(names, amounts);
+        }
+      );
+
+      this.barService.get_fraction_sold(this.barName, this.selectedDay).subscribe(
+        data => {
+          this.fraction = data[0].Fraction;
         }
       );
 

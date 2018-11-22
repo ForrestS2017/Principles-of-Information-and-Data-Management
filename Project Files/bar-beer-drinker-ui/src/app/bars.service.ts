@@ -18,6 +18,10 @@ export interface BarMenuItem {
   Likes: number;
 }
 
+export interface Fraction {
+  Fraction: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -56,7 +60,7 @@ export class BarsService {
   }
   
   get_fraction_sold(bar: string, day: string) {
-    return this.http.get<any[]>('/api/fraction-sold/' + bar + '/' + day)
+    return this.http.get<Fraction>('/api/fraction-sold/' + bar + '/' + day)
   }
   
   getDates() {

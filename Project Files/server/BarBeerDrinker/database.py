@@ -400,13 +400,18 @@ def get_liked_manfs(manf_name):
 
 def get_fraction_sold(bar_name, date):
     with engine.connect() as con:
-        query = sql.text("SELECT (sum(b.Quantity) / ii.Amount) AS Fraction \
+        query = sql.text("SELECT CAST((sum(b.Quantity) / ii.Amount) * 100 AS Decimal(18,2)) AS Fraction \
                         FROM Bills b, (SELECT sum(i.Amount) AS Amount FROM Inventory i WHERE i.BarName = 'Academia') ii \
                         WHERE b.BarName = :bar_name AND b.ItemName IN (SELECT bee.BeerName FROM Beers bee) AND b.Date = :date")
         rs = con.execute(query, bar_name=bar_name, date=date)
         if rs.rowcount is 0:
             return None
-        return [dict(row) for row in rs]
+        results = [dict(row) for row in rs]
+        for thisdict in results:            
+            target = list(thisdict.keys())
+            target = target[0]
+            thisdict[target] = float(thisdict[target])
+        return results
 
 """
 VERIFY PAGE
