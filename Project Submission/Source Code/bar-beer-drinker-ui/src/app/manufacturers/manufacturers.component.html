@@ -1,0 +1,32 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Manufacturers</h1>
+    <p class="lead">This page can be used to look up manufacturer statistics. Select a manufacturer from the dropdown menu to show data!</p>
+    <p-dropdown *ngIf="Mnames" [ngClass]="{ 'no-option-selected': selectedManf === undefined || selectedManf === null }"
+      placeholder="Select a Manufacturer" [options]="Mnames" [(ngModel)]="selectedManf" showClear="true"
+      (onChange)="onOptionSelectedM($event.value)"></p-dropdown>
+    <ng-container>
+      <span *ngIf="done === undefined || done === 0"></span>
+      <span *ngIf="done !== undefined && done !== 0">
+        <br><br>
+        Loading. . .<br>
+        Fetching data, please be patient
+      </span>
+    </ng-container>
+  </div>
+</div>
+
+<div class="container">
+  <ng-container>
+      <br><br>
+      <div id="salesChart" style="height: 400px; width: 100%;"></div>
+      <br><br>
+      <div id="popularChart" style="height: 400px; width: 100%;"></div>
+      <br><br>
+      <div id="statesChart" style="height: 400px; width: 100%;"></div>
+  </ng-container>
+</div>
+
+<br><br>
+
+

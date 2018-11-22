@@ -1,0 +1,63 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Bartenders Analytics</h1>
+    <p class="lead">This page can be used to analyze bartender productivity</p>
+    <p-dropdown *ngIf="barSelect" [ngClass]="{ 'no-option-selected': selectedBar === undefined || selectedBar === null }"
+      placeholder="Select a Bar" [options]="barSelect" [(ngModel)]="selectedBar" showClear="true"
+      (onChange)="getBartenders($event.value); selectedDay = null; selectedShift = null;"></p-dropdown>
+    <br><br>
+    <ng-container>
+      <span *ngIf="barName === undefined || barName === null || barName.length == 0"></span>
+      <span *ngIf="barName !== undefined && barName !== null && barName.length > 0">
+        <p-dropdown *ngIf="days" [ngClass]="{ 'no-option-selected': selectedDay === undefined || selectedDay === null }"
+          placeholder="Select a Day" [options]="days" [(ngModel)]="selectedDay" showClear="true"
+          (onChange)="setDay($event.value)"></p-dropdown>
+        &nbsp;&nbsp;
+        <p-dropdown *ngIf="shiftSelect" [ngClass]="{ 'no-option-selected': selectedShift === undefined || selectedShift === null }"
+          placeholder="Select a Shift" [options]="shiftSelect" [(ngModel)]="selectedShift" showClear="true"
+          (onChange)="setShift($event.value)"></p-dropdown>
+      </span>
+    </ng-container>
+    <ng-container>
+      <span *ngIf="done === undefined || done === 0"></span>
+      <span *ngIf="done !== undefined && done !== 0">
+        <br><br>
+        Loading. . .<br>
+        Fetching data, please be patient
+      </span>
+    </ng-container>
+  </div>
+</div>
+
+<div class="container">
+
+  <br><br>
+  <ng-container>
+      <span *ngIf="shiftName === undefined || shiftName === null || shiftName.length == 0 || dayName === undefined || dayName === null || dayName.length === 0"></span>
+      <span *ngIf="shiftName !== undefined && shiftName !== null && shiftName.length > 0 && dayName !== undefined && dayName !== null && dayName.length > 0">
+          <p-table [value]="rankings" autoLayout=true>
+            <ng-template pTemplate="header">
+                <tr><th colspan=3 style="text-align:center"><b>Rankings for {{barName}} [{{dayName}} {{shiftName}}]</b></th></tr>
+                <tr>
+                  <th>Rank</th>
+                  <th>Bartender</th>
+                  <th>Total Beers Sold</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-ranking>
+                <tr>
+                  <td>{{ ranking.Rank }}</td>
+                  <td>{{ ranking.Bartender }}</td>
+                  <td>{{ ranking.BeersSold }}</td>
+                </tr>
+            </ng-template>
+          </p-table>
+  
+          <br><br>
+  
+      </span>
+  </ng-container>
+  
+</div>
+
+<br><br>

@@ -1,0 +1,118 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Modifications</h1>
+    <p class="lead">Have some new data? Go ahead and update our database!</p>
+  </div>
+</div>
+
+<div class="container">
+  <h3>
+    <em>Database Schema</em>
+  </h3>
+  <p class="lead">
+    Table (Columns)
+  </p>
+  <p>
+    • Bars (BarName, License, State, City, Address, Phone, OpenTime, CloseTime)<br />
+    • Bartenders (EmployeeID, FirstName, LastName)<br />
+    • Beers (Name, Manf)<br />
+    • Bills (BillID, BarName, Date, Time, ItemName, Price, Quantity, TipTotal)<br />
+    • Dates (Day, Weekday)<br />
+    • Drinkers (FirstName, LastName, State, City, Phone, Address)<br />
+    • Frequents (FirstName, LastName, BarName)<br />
+    • Inventory (BarName, Beername, Amount)<br />
+    • Items (Barname, ItemName, Price)<br />
+    • Likes (FirstName, LastName, Beer)<br />
+    • Pays (BillID, FirstName, LastName)<br />
+    • Schedules (BarName, EmployeeID)<br />
+    • Sells (BarName, BeerName, Price)<br />
+    • Shifts (EmployeeID, StartTime, EndTime, WeekDay)<br />
+    • Sold (EmployeeID, BillID) <br />
+    • Stores (BarName, ItemName, Quantity)<br />
+  </p>
+  
+  <br>
+  
+  What would you like to do?&nbsp;
+  <p-dropdown *ngIf="actionSelect" [ngClass]="{ 'no-option-selected': selectedAction === undefined || selectedAction === null }"
+    placeholder="Select an Action" [options]="actionSelect" [(ngModel)]="selectedAction" showClear="true"
+    (onChange)="showAction($event.value);"></p-dropdown>
+  
+</div>
+
+<br>
+
+<ng-container>
+  <span *ngIf="action === undefined || action === null || action.length == 0"></span>
+  <span *ngIf="action !== undefined && action !== null && action.length > 0 && action == 'insert'">
+    <div class="container">
+      <h3 align="center">INSERT</h3>
+       <form>
+         <div class="form-group">
+           <label for="tableName2">Table and/or Columns</label>
+           <input type="text" [(ngModel)]="insert_table" class="form-control" name="tableName2" aria-describedby="reference" placeholder="table_name (column1, column2, column3, ...)">
+           <small id="reference" class="form-text text-muted">Please refer to the schema above.</small>
+         </div>
+         <div class="form-group">
+           <label for="valueList1">Values</label>
+           <input type="text" [(ngModel)]="insert_rows" class="form-control" name="valueList1" placeholder="value1, value2, value3, ...">
+         </div>
+        <button type="submit" class="btn btn-success" (click)="insert_row()">Submit</button>
+       </form>
+    </div>
+  </span>
+
+  <span *ngIf="action !== undefined && action !== null && action.length > 0 && action == 'update'">
+    <div class="container">
+      <h3 align="center">UPDATE</h3>
+      <form>
+        <div class="form-group">
+          <label for="tableName">Table</label>
+          <input type="text" [(ngModel)]="update_table" class="form-control" name="tableName" aria-describedby="reference" placeholder="table_name">
+          <small id="reference" class="form-text text-muted">Please refer to the schema above.</small>
+        </div>
+        <div class="form-group">
+          <label for="whereClause">Where Condition</label>
+          <input type="text" [(ngModel)]="update_where" class="form-control" name="whereClause" placeholder="column0 = value0 and ... (like WHERE condition in SQL)">
+        </div>
+        <div class="form-group">
+          <label for="valueList">Set Condition</label>
+          <input type="text" [(ngModel)]="update_set" class="form-control" name="valueList" placeholder="column1 = value1, column2 = value2, ... (like SET condition in SQL)">
+        </div>
+        <button type="submit" class="btn btn-success" (click)="update_row()">Submit</button>
+      </form>
+    </div>
+  </span>
+
+  <span *ngIf="action !== undefined && action !== null && action.length > 0 && action == 'delete'">
+    <div class="container">
+      <h3 align="center">DELETE</h3>
+       <form>
+         <div class="form-group">
+           <label for="tableName1">Table</label>
+           <input type="text" [(ngModel)]="delete_table" class="form-control" name="tableName1" aria-describedby="reference" placeholder="table_name">
+           <small id="reference" class="form-text text-muted">Please refer to the schema above.</small>
+         </div>
+         <div class="form-group">
+           <label for="whereClause1">Condition</label>
+           <input type="text" [(ngModel)]="delete_condition" class="form-control" name="whereClause1" placeholder="column0 = value0 and ... (like WHERE condition in SQL)">
+         </div>
+         <button type="submit" class="btn btn-success" (click)="delete_row()">Submit</button>
+       </form>
+    </div>
+  </span>
+
+</ng-container>
+
+<br>
+
+<ng-container>
+  <div class="container">
+      <span *ngIf="result === undefined || result === null || result.length == 0"></span>
+      <span *ngIf="result !== undefined && result !== null && result.length > 0">
+        <font color="blue"><b>Result:</b></font> {{result}}
+      </span>
+  </div>
+</ng-container>
+
+<br><br>

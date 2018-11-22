@@ -1,0 +1,45 @@
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">{{ barName }}</h1>
+        <p class="bar-details" *ngIf="barDetails">
+            {{ barDetails?.Address }} <span *ngIf="barDetails.Address && barDetails.City">|</span> {{ barDetails?.City }}
+            <br>
+            {{ barDetails?.Phone }}
+        </p>
+        <p-dropdown *ngIf="days" [ngClass]="{ 'no-option-selected': selectedDay === undefined || selectedDay === null }"
+      placeholder="Filter By Day" [options]="days" [(ngModel)]="selectedDay" showClear="true"
+      (onChange)="filterBars($event.value)"></p-dropdown>
+      <br>
+       *Select a date from the dropdown to show more!
+    </div>
+    
+</div>
+
+
+
+<div class="container">
+    <p class="font-weight-light result-count">Fraction of inventory sold on selected {{ selectedDay }}: {{ fraction }}%</p>
+    <br>
+    <div id="bargraph"></div>
+</div>
+
+<br>
+
+<div class="container">
+    <br>
+    <div id="bargraph2"></div>
+</div>
+
+<br>
+
+<div class="container">
+        <ng-container>
+            <div id="timeDistChart" style="height: 400px; width: 100%;"></div>
+            <br><br>
+        </ng-container>
+        <br>
+        <ng-container>
+                <div id="weekDistChart" style="height: 400px; width: 100%;"></div>
+                <br><br>
+            </ng-container>
+</div>

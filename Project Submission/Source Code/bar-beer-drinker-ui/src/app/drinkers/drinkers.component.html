@@ -1,0 +1,64 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Drinkers</h1>
+    <p class="lead">This page can be used to look up information about drinkers' transactions. Select a Drinker from the dropdown menu.</p>
+    <p-dropdown *ngIf="names" [ngClass]="{ 'no-option-selected': selectedDrinker === undefined || selectedDrinker === null }"
+      placeholder="Select a Drinker" [options]="names" [(ngModel)]="selectedDrinker" showClear="true"
+      (onChange)="onOptionSelected($event.value)"></p-dropdown>
+    <ng-container>
+      <br><br>
+      <span *ngIf="done === undefined || done === 0"></span>
+      <span *ngIf="done !== undefined && done !== 0">
+        Loading. . .<br>
+        Fetching data, please be patient
+      </span>
+    </ng-container>
+  </div>
+</div>
+
+<div class="container">
+
+  <br><br>
+  <ng-container>
+      <span *ngIf="drinkerName === undefined || drinkerName === null || drinkerName.length == 0"></span>
+      <span *ngIf="drinkerName !== undefined && drinkerName !== null && drinkerName.length > 0">          
+          <div id="ordersChart" style="height: 400px; width: 100%;"></div>
+          
+          <br><br>
+          
+          <div id="spendingChart" style="height: 400px; width: 100%;"></div>
+          
+          <br><br>
+          <p-table [value]="transactions" autoLayout=true>
+            <ng-template pTemplate="header">
+                <tr><th colspan=8 style="text-align:center"><b>{{drinkerName}}</b>'s Transactions</th></tr>
+                <tr>
+                  <th>Bill ID</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Bar</th>
+                  <th>Items</th>
+                  <th>Tax</th>
+                  <th>Tip</th>
+                  <th>Total</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-transaction>
+                <tr>
+                  <td>{{ transaction.ID }}</td>
+                  <td>{{ transaction.Date }}</td>
+                  <td>{{ transaction.Time }}</td>
+                  <td>{{ transaction.Bar }}</td>
+                  <td style="white-space:pre-line;">{{ transaction.ItemString }}</td>
+                  <td>${{ transaction.TaxString }}</td>
+                  <td>${{ transaction.TipString }}</td>
+                  <td>${{ transaction.TotalString }}</td>
+                </tr>
+            </ng-template>
+          </p-table>  
+      </span>
+  </ng-container>
+  
+</div>
+
+<br><br>

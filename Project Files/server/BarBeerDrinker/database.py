@@ -507,7 +507,6 @@ def verify_pattern_2():
             ELSE \'FALSE\' \
             END Verify;')
         rs = con.execute(query)
-        #result = { 'Verify': 'TRUE' }
         result = rs.first()
         if result is None:
             return None
@@ -570,7 +569,6 @@ def verify_pattern_5():
             ELSE \'FALSE\' \
             END Verify;')
         rs = con.execute(query)
-        #result = { 'Verify': 'TRUE' }
         result = rs.first()
         if result is None:
             return None
