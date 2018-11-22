@@ -362,7 +362,6 @@ def get_bartender_sales(first_name, last_name):
             WHERE t.FirstName = :first_name AND t.LastName = :last_name \
                 AND t.EmployeeID = s.EmployeeID AND s.EmployeeID = c.EmployeeID AND c.BarName = b.BarName \
                 AND b.ItemName IN (SELECT BeerName FROM Beers) \
-                AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
                 AND t.EmployeeID = o.EmployeeID AND b.BillID = o.BillID \
             GROUP BY b.ItemName')
         rs = con.execute(query, first_name=first_name, last_name=last_name)
@@ -394,7 +393,6 @@ def get_rankings_for_shift(bar_name, day, start_time):
                 AND c.BarName = :bar AND c.BarName = b.BarName \
                 AND b.ItemName IN (SELECT BeerName FROM Beers) \
                 AND s.StartTime = :startTime \
-                AND b.Time >= s.StartTime AND b.Time <= s.EndTime \
                 AND d.Date = b.Date AND d.Weekday = :day \
                 AND t.EmployeeID = o.EmployeeID AND b.BillID = o.BillID \
             GROUP BY t.EmployeeID')
