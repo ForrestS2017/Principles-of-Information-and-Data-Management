@@ -29,6 +29,16 @@ export interface TimeDist {
   Interval4: number;
 }
 
+export interface WeekDist {
+  Interval1: number;
+  Interval2: number;
+  Interval3: number;
+  Interval4: number;
+  Interval5: number;
+  Interval6: number;
+  Interval7: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -72,6 +82,10 @@ export class BarsService {
 
   getBarTimeDist(bar: string) {
     return this.http.get<TimeDist>('api/bar-time-dist/' + bar);
+  }
+  
+  getBarWeekDist(bar: string) {
+    return this.http.get<WeekDist>('api/bar-week-dist/' + bar);
   }
   
   getDates() {

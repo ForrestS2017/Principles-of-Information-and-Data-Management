@@ -159,6 +159,35 @@ def get_bar_time_dist(bar_name):
         rs = con.execute(query, bar_name=bar_name)
         return [dict(row) for row in rs]
 
+def get_bar_week_dist(bar_name):
+    """Gets a list of beer names from the beers table."""
+    with engine.connect() as con:
+        query = sql.text('SELECT * \
+                        FROM \
+                        (SELECT cast(sum(b1.Quantity) as unsigned) as Interval1 \
+                        FROM Bills b1  \
+                        WHERE b1.BarName = :bar_name AND b1.Date = "11/1") s1, \
+                        (SELECT cast(sum(b2.Quantity) as unsigned) as Interval2 \
+                        FROM Bills b2 \
+                        WHERE b2.BarName = :bar_name AND b2.Date = "11/2") s2, \
+                        (SELECT cast(sum(b3.Quantity) as unsigned) as Interval3 \
+                        FROM Bills b3 \
+                        WHERE b3.BarName = :bar_name AND b3.Date = "11/3") s3, \
+                        (SELECT cast(sum(b4.Quantity) as unsigned) as Interval4 \
+                        FROM Bills b4 \
+                        WHERE b4.BarName = :bar_name AND b4.Date = "11/4") s4, \
+                        (SELECT cast(sum(b5.Quantity) as unsigned) as Interval5 \
+                        FROM Bills b5 \
+                        WHERE b5.BarName = :bar_name AND b5.Date = "11/5") s5, \
+                        (SELECT cast(sum(b6.Quantity) as unsigned) as Interval6 \
+                        FROM Bills b6 \
+                        WHERE b6.BarName = :bar_name AND b6.Date = "11/6") s6, \
+                        (SELECT cast(sum(b7.Quantity) as unsigned) as Interval7 \
+                        FROM Bills b7 \
+                        WHERE b7.BarName = :bar_name AND b7.Date = "11/7") s7') 
+        rs = con.execute(query, bar_name=bar_name)
+        return [dict(row) for row in rs]
+
 
 """
 BEER PAGE

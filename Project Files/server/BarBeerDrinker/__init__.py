@@ -79,6 +79,13 @@ def get_bar_time_dist(bar_name):
     except Exception as e:
         return make_response(str(e), 500)
 
+@app.route("/api/bar-week-dist/<bar_name>", methods=["GET"])
+def get_bar_week_dist(bar_name):
+    try:
+        return jsonify(database.get_bar_week_dist(bar_name))
+    except Exception as e:
+        return make_response(str(e), 500)
+
 @app.route("/api/days", methods=["GET"])
 def get_days():
     try:

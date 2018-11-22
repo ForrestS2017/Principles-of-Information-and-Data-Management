@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BarsService, Bar, TimeDist, Fraction, BarMenuItem } from '../bars.service';
+import { BarsService, Bar, TimeDist, WeekDist, Fraction, BarMenuItem } from '../bars.service';
 import { HttpResponse } from '@angular/common/http';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import * as CanvasJS from '../canvasjs.min'
@@ -25,6 +25,7 @@ export class BarDetailsComponent implements OnInit {
   days: SelectItem[];
   fraction: number;
   timeDist: TimeDist;
+  weekDist: WeekDist;
   
   constructor(
     private barService: BarsService,
@@ -112,6 +113,14 @@ export class BarDetailsComponent implements OnInit {
           this.timeDist = data;
         }
       );
+
+      this.barService.getBarWeekDist(this.barName).subscribe(
+        data => {
+          this.weekDist = data;
+        }
+      );
+
+      this.getWeekDistChart(this.barName);
       this.getTimeDistChart(this.barName);
     }
   }
@@ -138,6 +147,34 @@ export class BarDetailsComponent implements OnInit {
       dps.push({ y: inters.Interval4, label: '6PM - 12AM' })
      
       timeDistChart.render();
+    });
+  }
+
+  getWeekDistChart(barName){
+    console.log('SHOULD GRAPH')
+    this.barService.getBarWeekDist(barName).subscribe(data => {
+      var dps:DataPoint[] = [];
+      let weekDistChart = new CanvasJS.Chart('weekDistChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: barName + ' - Weekly Distribution of Sales'
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      var inters:WeekDist = data[0];
+      dps.push({ y: inters.Interval1, label: '11/1' })
+      dps.push({ y: inters.Interval2, label: '11/2' })
+      dps.push({ y: inters.Interval3, label: '11/3' })
+      dps.push({ y: inters.Interval4, label: '11/4' })
+      dps.push({ y: inters.Interval5, label: '11/5' })
+      dps.push({ y: inters.Interval6, label: '11/6' })
+      dps.push({ y: inters.Interval7, label: '11/7' })
+     
+      weekDistChart.render();
     });
   }
   
