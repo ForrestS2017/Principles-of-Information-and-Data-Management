@@ -22,6 +22,13 @@ export interface Fraction {
   Fraction: number;
 }
 
+export interface TimeDist {
+  Interval1: number;
+  Interval2: number;
+  Interval3: number;
+  Interval4: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -61,6 +68,10 @@ export class BarsService {
   
   get_fraction_sold(bar: string, day: string) {
     return this.http.get<Fraction>('/api/fraction-sold/' + bar + '/' + day)
+  }
+
+  getBarTimeDist(bar: string) {
+    return this.http.get<TimeDist>('api/bar-time-dist/' + bar);
   }
   
   getDates() {

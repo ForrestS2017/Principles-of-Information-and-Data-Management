@@ -139,6 +139,26 @@ def get_days():
         results = [dict(row) for row in rs]
         return results
 
+def get_bar_time_dist(bar_name):
+    """Gets a list of beer names from the beers table."""
+    with engine.connect() as con:
+        query = sql.text('SELECT * \
+                        FROM \
+                        (SELECT cast(sum(b1.Quantity) as unsigned) as Interval1 \
+                        FROM Bills b1  \
+                        WHERE b1.BarName = :bar_name AND b1.Time >= "00:00" AND b1.Time < "06:00") s1, \
+                        (SELECT cast(sum(b2.Quantity) as unsigned) as Interval2 \
+                        FROM Bills b2 \
+                        WHERE b2.BarName = :bar_name AND b2.Time >= "06:00" AND b2.Time < "12:00") s2, \
+                        (SELECT cast(sum(b3.Quantity) as unsigned) as Interval3 \
+                        FROM Bills b3 \
+                        WHERE b3.BarName = :bar_name AND b3.Time >= "12:00" AND b3.Time < "18:00") s3, \
+                        (SELECT cast(sum(b4.Quantity) as unsigned) as Interval4 \
+                        FROM Bills b4 \
+                        WHERE b4.BarName = :bar_name AND b4.Time >= "18:00" AND b4.Time < "24:00") s4') 
+        rs = con.execute(query, bar_name=bar_name)
+        return [dict(row) for row in rs]
+
 
 """
 BEER PAGE

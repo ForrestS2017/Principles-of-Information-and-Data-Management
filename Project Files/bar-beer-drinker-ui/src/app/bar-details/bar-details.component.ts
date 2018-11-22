@@ -1,10 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BarsService, Bar, Fraction, BarMenuItem } from '../bars.service';
+import { BarsService, Bar, TimeDist, Fraction, BarMenuItem } from '../bars.service';
 import { HttpResponse } from '@angular/common/http';
 import { SelectItem } from 'primeng/components/common/selectitem';
+import * as CanvasJS from '../canvasjs.min'
+
 
 declare const Highcharts: any;
+export interface DataPoint {
+  y: number;
+  label: string;
+}
 
 @Component({
   selector: 'app-bar-details',
@@ -18,6 +24,7 @@ export class BarDetailsComponent implements OnInit {
   barDetails: Bar;
   days: SelectItem[];
   fraction: number;
+  timeDist: TimeDist;
   
   constructor(
     private barService: BarsService,
@@ -100,8 +107,40 @@ export class BarDetailsComponent implements OnInit {
         }
       );
 
+      this.barService.getBarTimeDist(this.barName).subscribe(
+        data => {
+          this.timeDist = data;
+        }
+      );
+      this.getTimeDistChart(this.barName);
     }
   }
+
+  getTimeDistChart(barName){
+    console.log('SHOULD GRAPH')
+    this.barService.getBarTimeDist(barName).subscribe(data => {
+      var dps:DataPoint[] = [];
+      let timeDistChart = new CanvasJS.Chart('timeDistChart', {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: barName + ' - Time Distribution of Sales'
+        },
+        data: [{
+          type: "column",
+          dataPoints: dps
+        }]
+      });
+      var inters:TimeDist = data[0];
+      dps.push({ y: inters.Interval1, label: '12AM - 6AM' })
+      dps.push({ y: inters.Interval2, label: '6AM - 12PM' })
+      dps.push({ y: inters.Interval3, label: '12PM - 6PM' })
+      dps.push({ y: inters.Interval4, label: '6PM - 12AM' })
+     
+      timeDistChart.render();
+    });
+  }
+  
 
   renderChart(names: string[], amounts: number[]) {
     Highcharts.chart('bargraph', {
@@ -163,6 +202,48 @@ export class BarDetailsComponent implements OnInit {
         min: 0,
         title: {
           text: 'Amount Sold'
+        },
+        labels: {
+          overflow: 'justify'
+        }
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            enabled: true
+          }
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        data: bamounts
+      }]
+    });
+  }
+
+  renderChart3(bnames: string[], bamounts: number[]) {
+    Highcharts.chart('bargraphTime', {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Time Distribution of Total Sales'
+      },
+      xAxis: {
+        categories: bnames,
+        title: {
+          text: 'Time of Day'
+        }
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Total Amount Sold'
         },
         labels: {
           overflow: 'justify'
