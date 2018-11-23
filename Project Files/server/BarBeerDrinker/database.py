@@ -586,7 +586,7 @@ def insert_row(table, values):
         elif ltable == "bills":
             table = "Bills (BillID, BarName, Date, Time, ItemName, Price, Quantity, TipTotal)"
         elif ltable == "dates":
-            table = "Dates (Day, Weekday)"
+            table = "Dates (Date, Weekday)"
         elif ltable == "drinkers":
             table = "Drinkers (FirstName, LastName, State, City, Phone, Address)"
         elif ltable == "frequents":

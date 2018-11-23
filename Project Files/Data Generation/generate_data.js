@@ -202,7 +202,7 @@ for (var i = 0; i < bar_names.length; i++) {
 }
 
 // Bartenders(EmployeeID, FirstName, LastName)
-for (var n = 0; n < 35000; n++) {
+for (var n = 0; n < 5000; n++) {
     var f_name = first_names[rand(0, first_names.length)];
     var l_name = last_names[rand(0, last_names.length)];
     var name = f_name + ' ' + l_name;
@@ -426,7 +426,7 @@ for (var i = 0; i < barKeys.length; i++) {
 // Bills cannot be issued when the given bar is closed
 // Bar cannot sell more beers than it has in its inventory
 var dates = ['11/1', '11/2', '11/3', '11/4', '11/5', '11/6', '11/7'];
-for (var i = 0; i < 21000; i++) {
+for (var i = 0; i < 25000; i++) {
     var city = Cities[cityKeys[rand(0, cityKeys.length)]];
     if (city.bars.length > 0 && city.drinkers.length > 0) {
         var bar = Bars[city.bars[rand(0, city.bars.length)]];

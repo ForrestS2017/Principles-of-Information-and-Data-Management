@@ -50,7 +50,7 @@ var i = 0; // Manually increment because otherwise the program runs out of memor
         }).finally(function () {
              console.log('Finished ' + table);
              closeDB();
-        }).catch(err =>  console.error('An error occurred!', err));
+        }).catch(err =>  console.error('Error', err));
 
 //}
 
