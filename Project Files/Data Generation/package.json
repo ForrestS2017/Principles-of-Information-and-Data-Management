@@ -1,7 +1,7 @@
 {
-  "name": "Data Generation For BarBeerDrinker Database",
+  "name": "Data Generation For BarBeerDrinkerPro Database",
   "version": "1.0.0",
-  "description": "Sniper dinosaur",
+  "description": "Data generation for BarBeerDrinkerPro database",
   "main": "generate_data.js",
   "author": "Unknown",
   "dependencies": {
