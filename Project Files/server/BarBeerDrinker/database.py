@@ -379,7 +379,7 @@ def get_bartenders_for_bar(bar_name):
 
 def get_shifts_for_bar(bar_name):
     with engine.connect() as con:
-        query = sql.text('SELECT s.StartTime, s.EndTime, s.WeekDay \
+        query = sql.text('SELECT DISTINCT s.StartTime, s.EndTime \
             FROM Schedules c, Shifts s \
             WHERE c.EmployeeID = s.EmployeeID AND c.BarName = :bar')
         rs = con.execute(query, bar=bar_name)
@@ -395,7 +395,7 @@ def get_rankings_for_shift(bar_name, day, start_time):
                 AND s.StartTime = :startTime \
                 AND d.Date = b.Date AND d.Weekday = :day \
                 AND t.EmployeeID = o.EmployeeID AND b.BillID = o.BillID \
-            GROUP BY t.EmployeeID')
+            GROUP BY t.EmployeeID ORDER BY BeersSold DESC')
         rs = con.execute(query, bar=bar_name, day=day, startTime=start_time)
         return [dict(row) for row in rs]
 
@@ -619,7 +619,7 @@ def insert_row(table, values):
             if rs.lastrowid == 0:
                 return "Success"
         except Exception as e:
-            return e[0]
+            return e.orig.args[1]
             
 def delete_rows(table, condition):
     with engine.connect() as con:
@@ -662,7 +662,7 @@ def delete_rows(table, condition):
             if rs.lastrowid == 0:
                 return "Success"
         except Exception as e:
-            return e[0]
+            return e.orig.args[1]
 
 def update_rows(table, set, where):
     with engine.connect() as con:
@@ -705,5 +705,5 @@ def update_rows(table, set, where):
             if rs.lastrowid == 0:
                 return "Success"
         except Exception as e:
-            return e[0]
+            return e.orig.args[1]
 

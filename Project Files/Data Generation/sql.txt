@@ -1,0 +1,554 @@
+http://infolab.stanford.edu/~ullman/fcdb/jw-notes06/constraints.html
+
+ALTER TABLE Drinkers
+MODIFY FirstName varchar(100) NOT NULL;
+
+ALTER TABLE Drinkers
+ADD PRIMARY KEY(FirstName, LastName);
+
+ALTER TABLE Sells
+ADD FOREIGN KEY (BeerName) REFERENCES Beers(BeerName);
+
+DELETE FROM Sells WHERE BarName = 'BarName'
+
+ALTER TABLE Sells
+ADD CONSTRAINT KeyConstraint UNIQUE(BarName, BeerName);
+
+delimiter //
+CREATE TRIGGER Pattern_1
+BEFORE INSERT ON Bills
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Bars ba
+		WHERE NEW.BarName = ba.BarName 
+			AND (
+				(ba.OpenTime < ba.CloseTime AND (NEW.Time < ba.OpenTime OR NEW.Time > ba.CloseTime))
+				OR
+				(ba.OpenTime > ba.CloseTime AND (NEW.Time < ba.OpenTime AND NEW.Time > ba.CloseTime))
+			)
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 1 (Bills cannot be issued when a bar is closed) is violated by this insertion';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_1_update
+BEFORE UPDATE ON Bills
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Bars ba
+		WHERE NEW.BarName = ba.BarName 
+			AND (
+				(ba.OpenTime < ba.CloseTime AND (NEW.Time < ba.OpenTime OR NEW.Time > ba.CloseTime))
+				OR
+				(ba.OpenTime > ba.CloseTime AND (NEW.Time < ba.OpenTime AND NEW.Time > ba.CloseTime))
+			)
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 1 (Bills cannot be issued when a bar is closed) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_1_1_update
+BEFORE UPDATE ON Bars
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Bills b
+		WHERE b.BarName = NEW.BarName 
+			AND (
+				(NEW.OpenTime < NEW.CloseTime AND (b.Time < NEW.OpenTime OR b.Time > NEW.CloseTime))
+				OR
+				(NEW.OpenTime > NEW.CloseTime AND (b.Time < NEW.OpenTime AND b.Time > NEW.CloseTime))
+			)
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 1 (Bills cannot be issued when a bar is closed) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_2 
+BEFORE INSERT ON Frequents
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT * 
+        FROM Drinkers d, Bars b
+        WHERE d.FirstName = NEW.FirstName AND d.LastName = NEW.LastName
+			AND b.BarName = NEW.BarName AND d.State <> b.State
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 2 (Drinkers cannot frequent bars in different states) is violated by this insertion';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_2_update
+BEFORE UPDATE ON Frequents
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT * 
+        FROM Drinkers d, Bars b
+        WHERE d.FirstName = NEW.FirstName AND d.LastName = NEW.LastName
+			AND b.BarName = NEW.BarName AND d.State <> b.State
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 2 (Drinkers cannot frequent bars in different states) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_2_1_update
+BEFORE UPDATE ON Drinkers
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT * 
+        FROM Frequents f, Bars b
+        WHERE NEW.FirstName = f.FirstName AND NEW.LastName = f.LastName
+			AND b.BarName = f.BarName AND NEW.State <> b.State
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 2 (Drinkers cannot frequent bars in different states) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_2_2_update
+BEFORE UPDATE ON Bars
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT * 
+        FROM Drinkers d, Frequents f
+        WHERE d.FirstName = f.FirstName AND d.LastName = f.LastName
+			AND NEW.BarName = f.BarName AND d.State <> NEW.State
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 2 (Drinkers cannot frequent bars in different states) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_3
+BEFORE INSERT ON Sells
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Sells s2
+		WHERE NEW.BarName = s2.BarName AND NEW.BeerName <> s2.BeerName AND NEW.Price < s2.Price 
+		AND EXISTS (
+			SELECT *
+			FROM Sells s3, Sells s4
+			WHERE s3.BarName = s4.BarName AND NEW.BeerName = s3.BeerName AND s2.BeerName = s4.BeerName
+				AND s3.Price > s4.Price
+		)
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 3 (if a beer is less expensive than another beer in one bar, then it must be less expensive than that beer in all bars ) is violated by this insertion';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_3_update
+BEFORE UPDATE ON Sells
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Sells s2
+		WHERE NEW.BarName = s2.BarName AND NEW.BeerName <> s2.BeerName AND NEW.Price < s2.Price 
+		AND EXISTS (
+			SELECT *
+			FROM Sells s3, Sells s4
+			WHERE s3.BarName = s4.BarName AND NEW.BeerName = s3.BeerName AND s2.BeerName = s4.BeerName
+				AND s3.Price > s4.Price
+		)
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 3 (if a beer is less expensive than another beer in one bar, then it must be less expensive than that beer in all bars ) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_4
+BEFORE INSERT ON Bills
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Inventory i2,
+			(SELECT NEW.BarName, NEW.ItemName, SUM(NEW.Quantity) AS TotalSales
+				FROM Inventory i
+				WHERE NEW.BarName = i.BarName AND NEW.ItemName = i.Beername
+				GROUP BY NEW.BarName, NEW.ItemName) AS d
+		WHERE i2.BarName = d.BarName AND i2.BeerName = d.ItemName AND i2.Amount < d.TotalSales
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 4 (Bars cannot sell more beers than they have in their inventory) is violated by this insertion';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_4_update
+BEFORE UPDATE ON Bills
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Inventory i2,
+			(SELECT NEW.BarName, NEW.ItemName, SUM(NEW.Quantity) AS TotalSales
+				FROM Inventory i
+				WHERE NEW.BarName = i.BarName AND NEW.ItemName = i.Beername
+				GROUP BY NEW.BarName, NEW.ItemName) AS d
+		WHERE i2.BarName = d.BarName AND i2.BeerName = d.ItemName AND i2.Amount < d.TotalSales
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 4 (Bars cannot sell more beers than they have in their inventory) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_4_1_update
+BEFORE UPDATE ON Inventory
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM (SELECT b.BarName, b.ItemName, SUM(b.Quantity) AS TotalSales
+				FROM Bills b, Inventory i
+				WHERE b.BarName = i.BarName AND b.ItemName = i.Beername
+				GROUP BY b.BarName, b.ItemName) AS d
+		WHERE NEW.BarName = d.BarName AND NEW.BeerName = d.ItemName AND NEW.Amount < d.TotalSales
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 4 (Bars cannot sell more beers than they have in their inventory) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_5
+BEFORE INSERT ON Shifts
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Shifts s
+		WHERE s.EmployeeID = NEW.EmployeeID AND s.WeekDay = NEW.WeekDay 
+			AND s.StartTime <> NEW.StartTime AND s.EndTime <> NEW.EndTime
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 5 (Bartenders cannot work more than one shift a day ) is violated by this insertion';
+	END IF;
+END;
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER Pattern_5_update
+BEFORE UPDATE ON Shifts
+FOR EACH ROW
+BEGIN
+	IF EXISTS (
+		SELECT *
+		FROM Shifts s
+		WHERE s.EmployeeID = NEW.EmployeeID AND s.WeekDay = NEW.WeekDay 
+			AND s.StartTime <> NEW.StartTime AND s.EndTime <> NEW.EndTime
+	)
+	THEN SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Pattern 5 (Bartenders cannot work more than one shift a day ) is violated by this update';
+	END IF;
+END;
+//
+delimiter ;
+
+INSERT INTO Frequents(FirstName, LastName, BarName) VALUES ('Forrest', 'Smith', '33 Taps')
+
+INSERT INTO Sold(EmployeeID, BillID) 
+VALUES ('CNM-8CA24E3F650CF22F', 'CNM-10CDAA71E82CC30E'),
+('CNM-8CA24E3F650CF22F', 'CNM-E88A044E5A48F949'),
+('CNM-8CA24E3F650CF22F', 'CNM-4C2F3A009D4E2F7B'),
+('CNM-8CA24E3F650CF22F', 'CNM-41CA90FD1258467B'),
+('CNM-8CA24E3F650CF22F', 'CNM-9850391C8BD88DEF'),
+('CNM-8CA24E3F650CF22F', 'CNM-5977AF8D0ED040F4'),
+('CNM-8CA24E3F650CF22F', 'CNM-4AEDAFD3F382A5AE');
+
+SELECT *
+FROM information_schema.table_constraints
+WHERE CONSTRAINT_SCHEMA = 'BarBeerDrinkerPro';
+
+ALTER TABLE Sells
+DROP FOREIGN KEY Sells_ibfk_1
+
+ALTER TABLE Sells
+DROP INDEX KeyConstraint
+
+ALTER TABLE Beers
+DROP PRIMARY KEY
+
+SHOW TRIGGERS
+
+DROP TRIGGER test
+
+id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+firstname VARCHAR(30) NOT NULL,
+lastname VARCHAR(30) NOT NULL,
+email VARCHAR(50),
+reg_date TIMESTAMP,
+PRIMARY KEY(id),
+FOREIGN KEY (PersonID) REFERENCES Persons(PersonID),
+FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+
+DROP TABLE Frequents;
+DROP TABLE Inventory;
+DROP TABLE Items;
+DROP TABLE Likes;
+DROP TABLE Pays;
+DROP TABLE Schedules;
+DROP TABLE Sells;
+DROP TABLE Shifts;
+DROP TABLE Sold;
+DROP TABLE Stores;
+DROP TABLE Bartenders;
+DROP TABLE Beers;
+DROP TABLE Bills;
+DROP TABLE Dates;
+DROP TABLE Drinkers;
+DROP TABLE Bars;
+DROP TABLE BillIDs;
+
+* Bars(BarName, License, State, City, Address, Phone, OpenTime, CloseTime)
+
+CREATE TABLE Bars (
+    BarName VARCHAR(100) NOT NULL,
+    License VARCHAR(50) NOT NULL,
+    State VARCHAR(50) NOT NULL,
+    City VARCHAR(50) NOT NULL,
+    Address VARCHAR(50) NOT NULL,
+    Phone VARCHAR(20) NOT NULL,
+    OpenTime VARCHAR(10) NOT NULL,
+    CloseTime VARCHAR(10) NOT NULL,
+    PRIMARY KEY (BarName)
+);
+
+* Bartenders(EmployeeID, FirstName, LastName)
+
+CREATE Table Bartenders (
+    EmployeeID VARCHAR(10) NOT NULL,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    PRIMARY KEY (EmployeeID)
+);
+
+* Beers(BeerName, Manf)
+
+CREATE TABLE Beers (
+    BeerName VARCHAR(50) NOT NULL,
+    Manf VARCHAR(50) NOT NULL,
+    PRIMARY KEY (BeerName)
+);
+
+* Dates(Date, Weekday)
+
+CREATE TABLE Dates (
+    Date VARCHAR(10) NOT NULL,
+    Weekday VARCHAR(10) NOT NULL,
+    PRIMARY KEY (Day)
+);
+
+* Drinkers(FirstName, LastName, State, City, Phone, Address)
+
+CREATE TABLE Drinkers (
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    State VARCHAR(50) NOT NULL,
+    City VARCHAR(50) NOT NULL,
+    Phone VARCHAR(20) NOT NULL,
+    Address VARCHAR(50) NOT NULL,
+    PRIMARY KEY (FirstName, LastName)
+);
+
+* Frequents(FirstName, LastName, BarName)
+
+CREATE TABLE Frequents (
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    BarName VARCHAR(50) NOT NULL,
+    FOREIGN KEY (FirstName, LastName) REFERENCES Drinkers(FirstName, LastName),
+    FOREIGN KEY (BarName) REFERENCES Bars(BarName),
+    UNIQUE (FirstName, LastName, BarName)
+);
+
+* Likes(FirstName, LastName, Beer)
+
+CREATE TABLE Likes (
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Beer VARCHAR(50) NOT NULL,
+    FOREIGN KEY (FirstName, LastName) REFERENCES Drinkers(FirstName, LastName),
+    FOREIGN KEY (Beer) REFERENCES Beers(BeerName),
+    UNIQUE (FirstName, LastName, Beer)
+);
+
+* Sells(BarName, BeerName, Price)
+
+CREATE TABLE Sells (
+    BarName VARCHAR(50) NOT NULL,
+    BeerName VARCHAR(50) NOT NULL,
+    Price FLOAT(10, 2) NOT NULL,
+    FOREIGN KEY (BarName) REFERENCES Bars(BarName),
+    FOREIGN KEY (BeerName) REFERENCES Beers(BeerName),
+    UNIQUE(BarName, BeerName)
+);
+
+* Inventory(BarName, Beername, Amount)
+
+CREATE TABLE Inventory (
+    BarName VARCHAR(50) NOT NULL,
+    Beername VARCHAR(50) NOT NULL,
+    Amount INT NOT NULL,
+    FOREIGN KEY (BarName) REFERENCES Bars(BarName),
+    FOREIGN KEY (Beername) REFERENCES Beers(BeerName),
+    UNIQUE (BarName, BeerName)
+);
+
+* Items(BarName, ItemName, Price)
+
+CREATE TABLE Items (
+    BarName VARCHAR(50) NOT NULL,
+    ItemName VARCHAR(50) NOT NULL,
+    Price FLOAT(10, 2) NOT NULL,
+    FOREIGN KEY (BarName) REFERENCES Bars(BarName),
+    UNIQUE (BarName, ItemName)
+);
+
+* Stores(BarName, ItemName, Quantity)
+
+CREATE TABLE Stores (
+    BarName VARCHAR(50) NOT NULL,
+    ItemName VARCHAR(50) NOT NULL,
+    Quantity INT NOT NULL,
+    FOREIGN KEY (BarName) REFERENCES Bars(BarName),
+    UNIQUE (BarName, ItemName)
+);
+
+* Schedules(BarName, EmployeeID)
+
+CREATE TABLE Schedules (
+    BarName VARCHAR(50) NOT NULL,
+    EmployeeID VARCHAR(50) NOT NULL,
+    FOREIGN KEY (BarName) REFERENCES Bars(BarName),
+    FOREIGN KEY (EmployeeID) REFERENCES Bartenders(EmployeeID),
+    UNIQUE (BarName, EmployeeID)
+);
+
+* Shifts(EmployeeID, StartTime, EndTime, WeekDay)
+
+CREATE TABLE Shifts (
+    EmployeeID VARCHAR(50) NOT NULL,
+    StartTime VARCHAR(10) NOT NULL,
+    EndTime VARCHAR(10) NOT NULL,
+    WeekDay VARCHAR(10) NOT NULL,
+    FOREIGN KEY (EmployeeID) REFERENCES Bartenders(EmployeeID),
+    UNIQUE (EmployeeID, StartTime, EndTime, WeekDay)
+);
+
+CREATE TABLE BillIDs (
+    BillID VARCHAR(50) NOT NULL,
+    PRIMARY KEY (BillID)
+);
+
+
+* Bills(BillID, BarName, Date, Time, ItemName, Price, Quantity, TipTotal)
+
+CREATE TABLE Bills (
+    BillID VARCHAR(50) NOT NULL,
+    BarName VARCHAR(50) NOT NULL,
+    Date VARCHAR(10) NOT NULL,
+    Time VARCHAR(10) NOT NULL,
+    ItemName VARCHAR(50) NOT NULL,
+    Price FLOAT(10, 2) NOT NULL,
+    Quantity INT NOT NULL,
+    TipTotal FLOAT(10, 2) NOT NULL,
+    FOREIGN KEY (BillID) REFERENCES BillIDs(BillID),
+    FOREIGN KEY (BarName) REFERENCES Bars(BarName),
+    FOREIGN KEY (Date) REFERENCES Dates(Day),
+    UNIQUE (BillID, BarName, Date, Time, ItemName)
+);
+
+* Pays(BillID, FirstName, LastName, Total)
+
+CREATE TABLE Pays (
+    BillID VARCHAR(50) NOT NULL,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Total FLOAT(10, 2) NOT NULL,
+    FOREIGN KEY (BillID) REFERENCES BillIDs(BillID),
+    FOREIGN KEY (FirstName, LastName) REFERENCES Drinkers(FirstName, LastName),
+    UNIQUE (BillID)
+);
+
+* Sold(EmployeeID, BillID)
+
+CREATE TABLE Sold (
+    EmployeeID VARCHAR(50) NOT NULL,
+    BillID VARCHAR(50) NOT NULL,
+    FOREIGN KEY (EmployeeID) REFERENCES Bartenders(EmployeeID),
+    FOREIGN KEY (BillID) REFERENCES BillIDs(BillID),
+    UNIQUE (BillID)
+);
+
+
+delimiter //
+CREATE TRIGGER delete_beers_from_bills     
+AFTER DELETE ON Beers   
+FOR EACH ROW     
+BEGIN
+    DELETE FROM Bills where BeerName = OLD.BeerName;
+END
+//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER delete_items_from_bills     
+AFTER DELETE ON Items 
+FOR EACH ROW     
+BEGIN
+    DELETE FROM Bills where ItemName = OLD.ItemName;
+END
+//
+delimiter ;

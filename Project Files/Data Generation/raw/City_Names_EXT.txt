@@ -1,0 +1,30 @@
+Atlanta,GA,404
+Austin,TX,512
+Baltimore,MD,443
+Boston,MA,617
+Chicago,IL,773
+Cleveland,OH,216
+Colorado Springs,CO,719
+Dallas,TX,214
+Denver,CO,303
+Detroit,MI,313
+El Paso,TX,915
+Houston,TX,713
+Jacksonville,FL,904
+Kansas City,MO,816
+Las Vegas,NV,702
+Long Beach,FL,562
+Los Angeles,CA,213
+Memphis,TN,901
+Miami,FL,305
+Minneapolis,MN,612
+New Orleans,LA,504
+New York,NY,212
+Oklahoma City,OK,405
+Philadelphia,PA,215
+Phoenix,AZ,480
+Portland,OR,503
+Sacramento,CA,916
+San Diego,CA,858
+San Francisco,CA,628
+Seattle,WA,206
